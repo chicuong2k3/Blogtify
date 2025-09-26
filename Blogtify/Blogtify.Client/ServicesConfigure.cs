@@ -23,20 +23,30 @@ public static class ServicesConfigure
         {
             if (string.IsNullOrEmpty(wasmEnv.BaseAddress))
                 throw new InvalidOperationException("WASM BaseAddress is missing. Cannot configure HttpClient.");
-            services.AddHttpClient<AppDataManager>(client =>
+
+            services.AddSingleton<AppDataManager>(sp =>
             {
-                client.BaseAddress = new Uri(wasmEnv.BaseAddress);
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri(wasmEnv.BaseAddress)
+                };
+                return new AppDataManager(client);
             });
         }
         else
         {
             var apiBase = config?["ApiBaseUrl"] ?? throw new ArgumentNullException("ApiBaseUrl is missing.");
 
-            services.AddHttpClient<AppDataManager>(client =>
+            services.AddSingleton<AppDataManager>(sp =>
             {
-                client.BaseAddress = new Uri(apiBase);
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri(apiBase)
+                };
+                return new AppDataManager(client);
             });
         }
+
 
 
     }
