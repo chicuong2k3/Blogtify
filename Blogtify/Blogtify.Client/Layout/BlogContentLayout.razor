@@ -1,0 +1,150 @@
+﻿@inherits LayoutComponentBase
+@layout MainLayout
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject AppDataManager AppDataManager
+
+<HeadContent>
+    <meta name="description" content="@(_currentContent?.SeoDescriptions != null ? _currentContent?.SeoDescriptions : _currentContent?.Title)" />
+</HeadContent>
+
+<HxCard>
+    <BodyTemplate>
+        @if (_currentContent is not null)
+        {
+            <div class="d-md-flex flex-row justify-content-between align-items-center">
+                <div></div>
+                <h1 class="text-center m-0 bg-primary text-white p-2">@_currentContent.Title</h1>
+                <div class="me-1 mt-2 mt-md-0">
+                    @if (_currentContent.Category != null)
+                    {
+
+                        <HxBadge Color="ThemeColor.Info" Type="BadgeType.RoundedPill">
+                            <a class="text-white text-decoration-none fs-6" href="@($"?page=1&pageSize={Constants.PageSize}&categories={_currentContent.Category}")">
+                                @_currentContent.Category
+                            </a>
+                        </HxBadge>
+                    }
+                </div>
+            </div>
+
+            <div class="mt-4" @ref="_contentRef">
+                @Body
+            </div>
+        }
+    </BodyTemplate>
+</HxCard>
+
+<HxCard CssClass="mt-2">
+    <HeaderTemplate>
+        <p class="h1 lead">Bình luận</p>
+    </HeaderTemplate>
+    <BodyTemplate>
+        @if (_isLoading)
+        {
+            <div class="text-center p-3">
+                <HxSpinner Size="SpinnerSize.Regular" />
+            </div>
+        }
+        <div id="disqus_thread"></div>
+    </BodyTemplate>
+</HxCard>
+
+<HxCard CssClass="mt-2">
+    <HeaderTemplate>
+        <p class="h1 lead">Gợi ý</p>
+    </HeaderTemplate>
+    <BodyTemplate>
+        <RelatedPosts Content="@_currentContent" />
+    </BodyTemplate>
+</HxCard>
+
+<div class="reading-progress-container">
+    <HxProgress>
+        <HxProgressBar Value="@_progress" MaxValue="100" MinValue="0"
+                       Label="@($"{Math.Round(_progress, 0)}%")" Color="ThemeColor.Primary" />
+    </HxProgress>
+</div>
+
+@code {
+    private IJSObjectReference? _module;
+
+    private bool _isLoading = false;
+
+    private ContentDto? _currentContent = null;
+
+    private string _bookmarkKey => $"article-{_currentContent?.Route}-scroll";
+    private DotNetObjectReference<BlogContentLayout>? _dotNetRef;
+    private ElementReference _contentRef;
+    private float _progress = 0;
+
+    protected override void OnParametersSet()
+    {
+        var currentUrl = new Uri(NavigationManager.Uri).AbsolutePath;
+        _currentContent = AppDataManager.GetContentByRoute(currentUrl);
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            _isLoading = true;
+            _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/Layout/BlogContentLayout.razor.js");
+
+            _dotNetRef ??= DotNetObjectReference.Create(this);
+
+            await _module.InvokeVoidAsync("addDisqusComments");
+            await _module.InvokeVoidAsync("loadScrollPosition", _bookmarkKey);
+            await _module.InvokeVoidAsync("addScrollListener", _bookmarkKey);
+
+            await _module.InvokeVoidAsync("readingProgressInit", _dotNetRef, _contentRef);
+
+            NavigationManager.LocationChanged += OnLocationChanged;
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (_module is null)
+            return;
+
+        await _module.InvokeVoidAsync("removeScrollListener");
+
+        var currentUrl = new Uri(e.Location).AbsolutePath;
+        _currentContent = AppDataManager.GetContentByRoute(currentUrl);
+
+        if (_contentRef.Context != null)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await _module.InvokeVoidAsync("loadScrollPosition", _bookmarkKey);
+            await _module.InvokeVoidAsync("addScrollListener", _bookmarkKey);
+            await _module.InvokeVoidAsync("readingProgressInit", _dotNetRef, _contentRef);
+        }
+
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void UpdateProgress(float progress)
+    {
+        _progress = progress;
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("removeScrollListener");
+            await _module.DisposeAsync();
+        }
+
+        NavigationManager.LocationChanged -= OnLocationChanged;
+        _dotNetRef?.Dispose();
+    }
+}

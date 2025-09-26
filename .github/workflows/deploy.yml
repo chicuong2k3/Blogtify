@@ -1,0 +1,40 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install wasm-tools
+        run: dotnet workload install wasm-tools-net8
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build Blogtify.sln --configuration Release --no-restore
+
+      - name: Publish Server (with default client build)
+        run: dotnet publish Blogtify/Blogtify/Blogtify.csproj -c Release -o ./publish
+
+      - name: Publish Client ReleaseCompat
+        run: dotnet publish Blogtify/Blogtify.Client/Blogtify.Client.csproj -c ReleaseCompat -o ./publishCompat --no-restore
+
+      - name: Copy compat framework
+        run: cp -r ./publishCompat/wwwroot/_framework ./publish/wwwroot/_frameworkCompat
+
+      # Trigger Render Deploy
+      - name: Trigger Render Deploy Hook
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"

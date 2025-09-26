@@ -1,0 +1,64 @@
+﻿@using System.Reflection
+
+@inject NavigationManager NavigationManager
+@inject AppDataManager AppDataManager
+
+
+<div class="row align-items-center">
+    <div class="col-4 col-md-8">
+        <a href="/" class="border-0" style="outline: none">
+            <img src="logo.png" alt="SymphoniX" style="width: 60px" />
+        </a>
+    </div>
+    <div class="col-8 col-md-4 search-box">
+        <HxSearchBox DataProvider="ProvideSearchResults"
+                     TItem="ContentDto" InputSize="InputSize.Regular"
+                     ItemTitleSelector="i => i.Title" MinimumLength="1"
+                     Placeholder="Tìm kiếm bài viết..." Delay="0"
+                     OnItemSelected="OnItemSelected" AllowTextQuery="@matched.Any()"
+                     OnTextQueryTriggered="OnTextQueryTriggered">
+            <DefaultContentTemplate>
+                <div class="p-2 text-muted fs-6">
+                    <HxIcon CssClass="me-2" Icon="BootstrapIcon.Lightbulb" />
+                    Nhập gì đó...
+                </div>
+            </DefaultContentTemplate>
+            <NotFoundTemplate>
+                <div class="p-2 text-muted fs-6">
+                    <HxIcon CssClass="me-2" Icon="BootstrapIcon.EmojiFrown" />
+                    Không tìm thấy bài viết nào...
+                </div>
+            </NotFoundTemplate>
+        </HxSearchBox>
+    </div>
+
+
+</div>
+
+@code {
+    private List<ContentDto> matched = [];
+
+    private async Task<SearchBoxDataProviderResult<ContentDto>> ProvideSearchResults(SearchBoxDataProviderRequest request)
+    {
+        var query = request.UserInput?.Trim() ?? "";
+
+        matched = await AppDataManager.GetContentsAsync(1, Constants.SearchPageSize, query, []);
+        StateHasChanged();
+
+        return new SearchBoxDataProviderResult<ContentDto>
+        {
+            Data = matched
+        };
+    }
+
+    private void OnItemSelected(ContentDto item)
+    {
+        NavigationManager.NavigateTo(item.Route);
+    }
+
+    private void OnTextQueryTriggered(string text)
+    {
+        NavigationManager.NavigateTo($"?Query={text}&Page=1", forceLoad: true);
+    }
+
+}

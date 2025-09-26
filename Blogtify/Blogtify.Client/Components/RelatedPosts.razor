@@ -1,0 +1,31 @@
+﻿@inject AppDataManager AppDataManager
+
+@if (_contents.Any())
+{
+    @foreach (var content in _contents)
+    {
+        <a class="d-block fs-6" href="@content.Route">
+            @content.Title
+        </a>
+    }
+}
+else
+{
+    <HxPlaceholderContainer Animation="PlaceholderAnimation.Glow">
+        <HxPlaceholder Columns="12" Size="PlaceholderSize.Small">
+        </HxPlaceholder>
+    </HxPlaceholderContainer>
+}
+
+
+@code {
+    [Parameter, EditorRequired]
+    public ContentDto Content { get; set; } = default!;
+
+    private List<ContentDto> _contents = [];
+
+    protected override void OnParametersSet()
+    {
+        _contents = AppDataManager.GetRecommendContents(Content);
+    }
+}

@@ -1,0 +1,25 @@
+﻿
+.code-block-wrapper {
+    position: relative;
+}
+
+pre {
+    border-radius: 8px;
+}
+
+
+code {
+    padding: 8px 0;
+}
+
+.copy-code-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1000 !important;
+    border: none !important;
+    border-top-left-radius: 5px !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 8px !important;
+    border-top-right-radius: 0 !important;
+}

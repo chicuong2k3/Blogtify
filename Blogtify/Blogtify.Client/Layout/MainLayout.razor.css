@@ -1,0 +1,58 @@
+﻿.main-content {
+    min-height: calc(100vh - 160px);
+}
+
+.sidebar.desktop {
+    position: fixed;
+    top: 84px;
+    left: 0;
+    width: 25%;
+    overflow-y: auto;
+}
+
+
+.sidebar ::deep .hx-tree-view-item-expander {
+    transition: transform 0.3s ease;
+}
+
+.sidebar ::deep .collapse {
+    transition: height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar ::deep .collapsing {
+    height: 0 !important;
+    opacity: 0;
+    transform: translateY(-5px);
+}
+
+.sidebar ::deep .collapse.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+::deep .offcanvas.offcanvas-start {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+    ::deep .offcanvas.offcanvas-start.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    ::deep .offcanvas.offcanvas-start.hiding {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+::deep .offcanvas-backdrop {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+    ::deep .offcanvas-backdrop.show {
+        opacity: 0.5;
+    }

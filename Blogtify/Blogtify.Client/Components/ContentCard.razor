@@ -1,0 +1,10 @@
+﻿
+<a class="fw-bold text-truncate" href="@Content.Route">
+    @Content.Title
+</a>
+
+
+@code {
+    [Parameter]
+    public ContentDto Content { get; set; } = default!;
+}

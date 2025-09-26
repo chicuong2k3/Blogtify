@@ -1,0 +1,95 @@
+﻿@page "/"
+
+@inject NavigationManager NavigationManager
+@inject AppDataManager AppDataManager
+@inject PersistentComponentState State
+
+<HxCard CssClass="h-100">
+    <HeaderTemplate>
+        <p class="h1">Các bài viết</p>
+    </HeaderTemplate>
+    <BodyTemplate>
+        <div class="row">
+            @foreach (var content in _contents)
+            {
+                <div class="mb-2">
+                    <ContentCard Content="@content" />
+                </div>
+            }
+        </div>
+
+        @if (_hasMore && !_isLoading)
+        {
+            <div class="text-center mt-4">
+                <HxButton Color="ThemeColor.Primary" Spinner="@_isLoading" OnClick="LoadMore">
+                    Tải thêm
+                </HxButton>
+            </div>
+        }
+    </BodyTemplate>
+</HxCard>
+
+@code {
+    private List<ContentDto> _contents = [];
+
+    [SupplyParameterFromQuery]
+    public string Query { get; set; } = string.Empty;
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; }
+
+    [SupplyParameterFromQuery(Name = "categories")]
+    public string[] Categories { get; set; } = [];
+
+    private int _totalContent;
+    private bool _isLoading = true;
+    private bool _hasMore = true;
+
+    private PersistingComponentStateSubscription persistingSubscription;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _totalContent = await AppDataManager.GetTotalContentsAsync(Query ?? string.Empty, Categories.ToList());
+        await LoadPosts();
+    }
+
+    private async Task LoadPosts()
+    {
+        _isLoading = true;
+
+        persistingSubscription = State.RegisterOnPersisting(() =>
+        {
+            State.PersistAsJson("contents", _contents);
+            State.PersistAsJson("hasMore", _hasMore);
+            return Task.CompletedTask;
+        });
+
+        if (!State.TryTakeFromJson<List<ContentDto>>("contents", out var restored))
+        {
+            _contents = await AppDataManager.GetContentsAsync(Page, Constants.PageSize, Query ?? string.Empty, Categories.ToList());
+        }
+        else
+        {
+            _contents = restored ?? [];
+        }
+
+        if (!State.TryTakeFromJson<bool>("hasMore", out var hasMoreRestored))
+        {
+            _hasMore = _contents.Count() < _totalContent;
+        }
+        else
+        {
+            _hasMore = hasMoreRestored;
+        }
+
+
+        _isLoading = false;
+    }
+
+    private async Task LoadMore()
+    {
+        Page++;
+        await LoadPosts();
+    }
+}

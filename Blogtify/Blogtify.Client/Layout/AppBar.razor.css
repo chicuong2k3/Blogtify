@@ -1,0 +1,9 @@
+
+
+.logo:hover {
+    cursor: pointer;
+}
+
+.search-box ::deep input {
+    outline: none;
+}
