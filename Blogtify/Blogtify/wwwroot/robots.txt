@@ -1,3 +1,3 @@
 ﻿User-agent: *
 Allow: /
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://codemagic.io.vn/sitemap.xml
