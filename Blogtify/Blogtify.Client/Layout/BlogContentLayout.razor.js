@@ -1,12 +1,28 @@
 
 
+let disqusLoaded = false;
+
 export function addDisqusComments() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://symphonix.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
+    if (!disqusLoaded) {
+        const d = document, s = d.createElement('script');
+        s.src = 'https://code-magic.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+        disqusLoaded = true;
+    }
 }
 
+export function resetDisqus(identifier, url) {
+    if (window.DISQUS) {
+        window.DISQUS.reset({
+            reload: true,
+            config: function () {
+                this.page.identifier = identifier;
+                this.page.url = url;
+            }
+        });
+    }
+}
 
 export function addScrollListener(key) {
     function handler() {

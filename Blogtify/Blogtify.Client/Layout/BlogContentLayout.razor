@@ -118,6 +118,8 @@
         var currentUrl = new Uri(e.Location).AbsolutePath;
         _currentContent = AppDataManager.GetContentByRoute(currentUrl);
 
+        await _module.InvokeVoidAsync("resetDisqus", _currentContent?.Route, NavigationManager.Uri);
+
         if (_contentRef.Context != null)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
