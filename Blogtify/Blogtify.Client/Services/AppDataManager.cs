@@ -40,7 +40,12 @@ public class AppDataManager
             (p.Details?.Contains(query, StringComparison.OrdinalIgnoreCase) ?? false));
     }
 
-    public async Task<List<ContentDto>> GetContentsAsync(int page, int pageSize, string query, List<string> categories)
+    public async Task<List<ContentDto>> GetContentsAsync(
+        int page,
+        int pageSize,
+        string query,
+        List<string> categories,
+        string sortDirection)
     {
         var contents = FilterContents(query, categories);
 
@@ -58,6 +63,17 @@ public class AppDataManager
                 result.Add(p);
             }
         }
+
+        result = sortDirection?.ToLowerInvariant() switch
+        {
+            "asc" => result
+                .OrderBy(p => p.LastModified ?? DateTime.MinValue)
+                .ToList(),
+            "desc" => result
+                .OrderBy(p => p.LastModified ?? DateTime.MinValue)
+                .ToList(),
+            _ => result.OrderBy(p => p.LastModified ?? DateTime.MinValue).ToList()
+        };
 
         return result
             .OrderByDescending(p => p.Id)

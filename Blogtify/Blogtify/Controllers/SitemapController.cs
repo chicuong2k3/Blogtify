@@ -27,7 +27,7 @@ public class SitemapController : ControllerBase
         int page = 1;
         do
         {
-            temp = await _appDataManager.GetContentsAsync(page, 50, string.Empty, []);
+            temp = await _appDataManager.GetContentsAsync(page, 50, string.Empty, [], "desc");
             contents.AddRange(temp);
             page++;
         } while (temp.Any());

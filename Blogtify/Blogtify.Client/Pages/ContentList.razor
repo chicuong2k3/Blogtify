@@ -10,6 +10,19 @@
     </HeaderTemplate>
     <BodyTemplate>
         <div class="row">
+            <div class="col-8 col-md-9"></div>
+            <div class="col-4 col-md-3">
+                <HxSelect TItem="SortFilter"
+                          TValue="string"
+                          Data="_sortFilters"
+                          Value="_selectedSortValue" ValueChanged="OnSortChanged"
+                          ValueExpression="() => _selectedSortValue"
+                          TextSelector="@(sort => sort.Text)"
+                          ValueSelector="@(sort => sort.Value)"
+                          Nullable="false" />
+            </div>
+        </div>
+        <div class="row">
             @foreach (var content in _contents)
             {
                 <div class="mb-2">
@@ -41,12 +54,17 @@
     [SupplyParameterFromQuery(Name = "categories")]
     public string[] Categories { get; set; } = [];
 
+    private List<SortFilter> _sortFilters = [
+        new() { Text = "Mới nhất", Value = "desc" },
+        new() { Text = "Cũ nhất", Value = "asc" }
+    ];
+    private string _selectedSortValue = "desc";
+
     private int _totalContent;
     private bool _isLoading = true;
     private bool _hasMore = true;
 
     private PersistingComponentStateSubscription persistingSubscription;
-
 
     protected override async Task OnParametersSetAsync()
     {
@@ -67,7 +85,7 @@
 
         if (!State.TryTakeFromJson<List<ContentDto>>("contents", out var restored))
         {
-            _contents = await AppDataManager.GetContentsAsync(Page, Constants.PageSize, Query ?? string.Empty, Categories.ToList());
+            _contents = await AppDataManager.GetContentsAsync(Page, Constants.PageSize, Query ?? string.Empty, Categories.ToList(), _selectedSortValue);
         }
         else
         {
@@ -91,5 +109,18 @@
     {
         Page++;
         await LoadPosts();
+    }
+
+
+    private async Task OnSortChanged(string value)
+    {
+        _selectedSortValue = value;
+        await LoadPosts();
+    }
+
+    record SortFilter
+    {
+        public string Value { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
     }
 }

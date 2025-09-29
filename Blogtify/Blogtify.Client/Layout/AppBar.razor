@@ -42,7 +42,7 @@
     {
         var query = request.UserInput?.Trim() ?? "";
 
-        matched = await AppDataManager.GetContentsAsync(1, Constants.SearchPageSize, query, []);
+        matched = await AppDataManager.GetContentsAsync(1, Constants.SearchPageSize, query, [], "desc");
         StateHasChanged();
 
         return new SearchBoxDataProviderResult<ContentDto>
