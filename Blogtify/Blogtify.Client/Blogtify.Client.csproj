@@ -51,9 +51,6 @@
 		<None Update="Layout\BlogContentLayout.razor.js">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="Layout\MainLayout.razor.js">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 	<ItemGroup>
