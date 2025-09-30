@@ -3,14 +3,13 @@
 public enum Theme
 {
     Yeti,
-    Darkly,
     Flatly,
     Lumen,
     Simplex,
     Sketchy,
     SandStone,
+    Darkly,
     Slate,
     Superhero,
-    Vapor,
     Solar
 }
