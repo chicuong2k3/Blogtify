@@ -12,6 +12,13 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Install dependencies needed for wasm-tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3 python3-pip clang zlib1g-dev && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY ["Blogtify/Blogtify/Blogtify.csproj", "Blogtify/Blogtify/"]
 COPY ["Blogtify/Blogtify.Client/Blogtify.Client.csproj", "Blogtify/Blogtify.Client/"]
 RUN dotnet restore "./Blogtify/Blogtify/Blogtify.csproj"
