@@ -64,9 +64,12 @@
 
 
 html {
-    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
-    font-size: 15px !important;
+}
+
+body {
+    font-family: var(--app-font-family, 'Inter') !important;
+    font-size: var(--app-font-size, 16px) !important;
 }

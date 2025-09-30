@@ -16,6 +16,7 @@ public static class ServicesConfigure
     {
         services.AddHxServices();
         services.AddScoped<IThemeProvider, ThemeProvider>();
+        services.AddScoped<IFontProvider, FontProvider>();
         services.AddBlazoredLocalStorage();
         services.AddHotKeys2();
 

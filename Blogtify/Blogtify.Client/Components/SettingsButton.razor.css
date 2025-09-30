@@ -13,3 +13,15 @@
         font-size: 20px;
         border-radius: 50%;
     }
+
+
+.dropdown-menu.show {
+    width: max-content;
+    min-width: 240px;
+}
+
+.menu-settings-item {
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: nowrap;
+}

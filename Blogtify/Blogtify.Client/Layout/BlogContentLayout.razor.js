@@ -1,16 +1,27 @@
 
-
 let disqusLoaded = false;
 
-export function addDisqusComments() {
+export function addDisqusComments(callbackHelper) {
     if (!disqusLoaded) {
         const d = document, s = d.createElement('script');
         s.src = 'https://code-magic.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
+
+        s.onload = () => {
+            disqusLoaded = true;
+            if (callbackHelper) {
+                callbackHelper.invokeMethodAsync("OnDisqusLoaded");
+            }
+        };
+
         (d.head || d.body).appendChild(s);
-        disqusLoaded = true;
+    } else {
+        if (callbackHelper) {
+            callbackHelper.invokeMethodAsync("OnDisqusLoaded");
+        }
     }
 }
+
 
 export function resetDisqus(identifier, url) {
     if (window.DISQUS) {
@@ -49,6 +60,8 @@ export function loadScrollPosition(key) {
 
 
 export function readingProgressInit(dotNetHelper, article) {
+    if (!article) return;
+
     const update = () => {
         const scrollTop = window.scrollY;
         const height = article.scrollHeight - window.innerHeight;

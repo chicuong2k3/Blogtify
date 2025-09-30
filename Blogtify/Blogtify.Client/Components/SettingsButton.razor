@@ -1,6 +1,7 @@
 ﻿@implements IAsyncDisposable
 
 @inject IThemeProvider ThemeProvider
+@inject IFontProvider FontProvider
 @inject IJSRuntime JSRuntime
 @inject HotKeys HotKeys
 
@@ -11,18 +12,35 @@
 
     @if (showSettingsMenu)
     {
-        <ul class="dropdown-menu show" style="position: absolute; bottom: 100%; left: 100%; transform: translate(-10px, -10px);">
+        <ul class="dropdown-menu show" style="width: auto;position: absolute; bottom: 100%; left: 100%; transform: translate(-10px, -5px);">
 
             <li class="dropdown-header">CÀI ĐẶT</li>
             <li>
-                <button class="dropdown-item" @onclick="ToggleThemeMenu">
+                <button class="dropdown-item" @onclick="@(() => {
+                    showThemeMenu = !showThemeMenu;
+                    if (showThemeMenu) { showFontMenu = false; showFontSizeMenu = false; }
+                })">
                     ĐỔI THEME
                 </button>
+                <button class="dropdown-item" @onclick="@(() => {
+                    showFontMenu = !showFontMenu;
+                    if (showFontMenu) { showThemeMenu = false; showFontSizeMenu = false; }
+                })">
+                    ĐỔI PHÔNG CHỮ
+                </button>
+
+                <button class="dropdown-item" @onclick="@(() => {
+                    showFontSizeMenu = !showFontSizeMenu;
+                    if (showFontSizeMenu) { showThemeMenu = false; showFontMenu = false; }
+                })">
+                    ĐỔI KÍCH THƯỚC CHỮ
+                </button>
+
             </li>
 
             @if (showThemeMenu)
             {
-                <li>
+                <li class="menu-settings-item">
                     <HxListGroup>
                         @foreach (var theme in Enum.GetNames(typeof(Theme)))
                         {
@@ -39,6 +57,46 @@
                     </HxListGroup>
                 </li>
             }
+            @if (showFontMenu)
+            {
+                <li class="menu-settings-item">
+                    <HxListGroup>
+                        @foreach (var font in fontList)
+                        {
+                            <HxListGroupItem OnClick="(() => ChangeFont(font))">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>@font.ToUpper()</span>
+                                    @if (font == selectedFont)
+                                    {
+                                        <HxIcon Icon="@BootstrapIcon.CheckCircleFill" CssClass="text-success fs-6" />
+                                    }
+                                </div>
+                            </HxListGroupItem>
+                        }
+                    </HxListGroup>
+                </li>
+            }
+
+            @if (showFontSizeMenu)
+            {
+                <li class="menu-settings-item">
+                    <HxListGroup>
+                        @foreach (var size in fontSizeList)
+                        {
+                            <HxListGroupItem OnClick="(() => ChangeFontSize(size))">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>@size</span>
+                                    @if (size == selectedFontSize)
+                                    {
+                                        <HxIcon Icon="@BootstrapIcon.CheckCircleFill" CssClass="text-success fs-6" />
+                                    }
+                                </div>
+                            </HxListGroupItem>
+                        }
+                    </HxListGroup>
+                </li>
+            }
+
         </ul>
     }
 </div>
@@ -50,6 +108,19 @@
     private DotNetObjectReference<object>? selfRef;
     private IJSObjectReference? _module;
 
+    private List<string> fontList = new List<string>
+    {
+        "Inter", "Roboto", "Noto Sans", "Lora", "Raleway",
+        "Nunito", "Source Code Pro", "Montserrat",
+        "Encode Sans", "Geologica"
+    };
+    private bool showFontMenu = false;
+    private string selectedFont = "Inter";
+
+    private bool showFontSizeMenu = false;
+    private string selectedFontSize = "16px";
+
+    private List<string> fontSizeList = Enumerable.Range(12, 12).Select(x => $"{x}px").ToList();
 
     private HotKeysContext? _hotKeysContext;
 
@@ -60,6 +131,13 @@
 
             var selectedTheme = (await ThemeProvider.GetThemeAsync()).ToString() ?? "Yeti";
             await ChangeTheme(selectedTheme, false);
+
+            var selectedFont = (await FontProvider.GetFontAsync()) ?? "Inter";
+            await ChangeFont(selectedFont, false);
+
+            var selectedFontSize = (await FontProvider.GetFontSizeAsync()) ?? "16px";
+            await ChangeFontSize(selectedFontSize, false);
+
             StateHasChanged();
 
             _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/SettingsButton.razor.js");
@@ -80,11 +158,6 @@
             showThemeMenu = false;
     }
 
-    private void ToggleThemeMenu()
-    {
-        showThemeMenu = !showThemeMenu;
-    }
-
 
     private async Task ChangeTheme(string theme, bool closeMenu = true)
     {
@@ -92,12 +165,23 @@
 
         var themeEnum = Enum.Parse<Theme>(theme);
         await ThemeProvider.SetThemeAsync(themeEnum);
+        StateHasChanged();
+    }
 
-        if (closeMenu)
-        {
-            showThemeMenu = false;
-            showSettingsMenu = true;
-        }
+    private async Task ChangeFont(string font, bool closeMenu = true)
+    {
+        selectedFont = font;
+
+        await FontProvider.SetFontAsync(font);
+        StateHasChanged();
+    }
+
+    private async Task ChangeFontSize(string size, bool closeMenu = true)
+    {
+        selectedFontSize = size;
+
+        await FontProvider.SetFontSizeAsync(size);
+        StateHasChanged();
     }
 
     public async ValueTask DisposeAsync()

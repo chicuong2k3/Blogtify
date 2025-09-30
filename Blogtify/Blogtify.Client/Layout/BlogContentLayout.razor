@@ -68,7 +68,7 @@
 </div>
 
 @code {
-    private IJSObjectReference? _module;
+    public IJSObjectReference? _module;
 
     private bool _isLoading = false;
 
@@ -96,7 +96,10 @@
 
             _dotNetRef ??= DotNetObjectReference.Create(this);
 
-            await _module.InvokeVoidAsync("addDisqusComments");
+            await _module.InvokeVoidAsync("addDisqusComments",
+                DotNetObjectReference.Create(new CallbackHelper(this, _currentContent?.Route, NavigationManager.Uri))
+            );
+
             await _module.InvokeVoidAsync("loadScrollPosition", _bookmarkKey);
             await _module.InvokeVoidAsync("addScrollListener", _bookmarkKey);
 
@@ -118,7 +121,9 @@
         var currentUrl = new Uri(e.Location).AbsolutePath;
         _currentContent = AppDataManager.GetContentByRoute(currentUrl);
 
-        await _module.InvokeVoidAsync("resetDisqus", _currentContent?.Route, NavigationManager.Uri);
+        await _module.InvokeVoidAsync("addDisqusComments",
+            DotNetObjectReference.Create(new CallbackHelper(this, _currentContent?.Route, NavigationManager.Uri))
+        );
 
         if (_contentRef.Context != null)
         {
@@ -130,6 +135,15 @@
 
         StateHasChanged();
     }
+
+    public async Task ResetDisqus(string identifier, string url)
+    {
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("resetDisqus", identifier, url);
+        }
+    }
+
 
     [JSInvokable]
     public void UpdateProgress(float progress)

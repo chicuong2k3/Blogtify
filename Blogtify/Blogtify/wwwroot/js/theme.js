@@ -18,6 +18,23 @@
                 codeBlockLink.href = `css/prism-vsc-dark-plus.min.css`;
             }
         }
+    },
+    setFont: function (font) {
+        document.documentElement.style.setProperty("--app-font-family", font);
+    },
+    setFontSize: function (size) {
+        document.documentElement.style.setProperty("--app-font-size", size);
+    },
+    loadGoogleFont: function (fontName) {
+        const id = "dynamic-font-link-" + fontName;
+        if (!document.getElementById(id)) {
+            const link = document.createElement("link");
+            link.id = id;
+            link.rel = "stylesheet";
+            link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}&display=swap`;
+            document.head.appendChild(link);
+        }
+        document.body.style.fontFamily = `'${fontName}', sans-serif`;
     }
 };
 
@@ -25,3 +42,4 @@
     const theme = localStorage.getItem("Theme") || "Yeti";
     themeSwitcher.setTheme(theme);
 })();
+
