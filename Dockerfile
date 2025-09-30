@@ -17,7 +17,7 @@ COPY ["Blogtify/Blogtify.Client/Blogtify.Client.csproj", "Blogtify/Blogtify.Clie
 RUN dotnet restore "./Blogtify/Blogtify/Blogtify.csproj"
 
 # Install wasm-tools
-RUN dotnet workload install wasm-tools-net8
+RUN dotnet workload install wasm-tools
 
 COPY . .
 WORKDIR "/src/Blogtify/Blogtify"
