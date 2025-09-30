@@ -4,6 +4,9 @@
 @inject IJSRuntime JSRuntime
 @inject AppDataManager AppDataManager
 
+@using Microsoft.Extensions.Options
+@inject IOptions<AdSenseSettings> AdSenseOptions
+
 <PageTitle>Code Magic</PageTitle>
 
 <div class="container-fluid">
@@ -83,6 +86,7 @@
 @code {
     private SidebarItem[] sidebarItems = [];
     private HxOffcanvas offcanvasComponent = new();
+    private IJSObjectReference? _module;
 
     protected override void OnInitialized()
     {
@@ -110,6 +114,15 @@
         );
 
         return item;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/Layout/MainLayout.razor.js");
+        await _module.InvokeVoidAsync("loadAdsense", AdSenseOptions.Value.ClientId);
+
+        StateHasChanged();
     }
 
     private async Task OnSelectedItemChanged(SidebarItem item)
