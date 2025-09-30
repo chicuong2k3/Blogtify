@@ -15,14 +15,24 @@ WORKDIR /src
 COPY ["Blogtify/Blogtify/Blogtify.csproj", "Blogtify/Blogtify/"]
 COPY ["Blogtify/Blogtify.Client/Blogtify.Client.csproj", "Blogtify/Blogtify.Client/"]
 RUN dotnet restore "./Blogtify/Blogtify/Blogtify.csproj"
+
+# Install wasm-tools
+RUN dotnet workload install wasm-tools-net8
+
 COPY . .
 WORKDIR "/src/Blogtify/Blogtify"
 RUN dotnet build "./Blogtify.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Blogtify.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Publish server
+RUN dotnet publish "Blogtify.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Publish client ReleaseCompat
+WORKDIR "/src/Blogtify/Blogtify.Client"
+RUN dotnet publish "Blogtify.Client.csproj" -c ReleaseCompat -o /app/publishCompat --no-restore
+
+# Copy compat framework into server's publish
+RUN mkdir -p /app/publish/wwwroot/_frameworkCompat && \
+    cp -r /app/publishCompat/wwwroot/_framework/* /app/publish/wwwroot/_frameworkCompat/
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final

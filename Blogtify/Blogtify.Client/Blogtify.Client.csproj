@@ -59,9 +59,6 @@
 		<ImageFiles Include="content\**\**\*.png;content\**\**\*.jpg;content\**\**\*.jpeg;content\**\**\*.gif;content\**\**\*.svg;content\**\**\*.gif;content\**\**\*.webp" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<None Include="Content\Posts\.NET\1. Options và Configuration trong .NET.md" />
-	</ItemGroup>
 	<Target Name="CopyAllImages" AfterTargets="Build">
 		<Copy SourceFiles="@(ImageFiles)" DestinationFolder="$(ProjectDir)wwwroot" SkipUnchangedFiles="true" />
 	</Target>
