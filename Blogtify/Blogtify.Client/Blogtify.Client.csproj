@@ -39,6 +39,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Update="Components\AdsComponent.razor.js">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="Components\BackToTopButton.razor.js">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

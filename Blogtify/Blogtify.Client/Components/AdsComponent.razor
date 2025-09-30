@@ -1,0 +1,58 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<AdSenseSettings> AdSenseOptions
+@inject IJSRuntime JSRuntime
+
+@if (_isClient)
+{
+
+    <div>
+        @Ads
+    </div>
+}
+
+@code {
+    private RenderFragment Ads
+    {
+        get
+        {
+            RenderFragment form = b =>
+            {
+                var seq = 0;
+                b.OpenElement(seq++, "script");
+                b.AddAttribute(seq++, "async", true);
+                b.AddAttribute(seq++, "src", "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js");
+                b.CloseElement();
+
+                // Ad container
+                b.OpenElement(seq++, "ins");
+                b.AddAttribute(seq++, "class", "adsbygoogle");
+                b.AddAttribute(seq++, "style", "display:inline-block;width:728px;height:90px");
+                b.AddAttribute(seq++, "data-ad-client", AdSenseOptions.Value.ClientId);
+                b.AddAttribute(seq++, "data-ad-slot", AdSenseOptions.Value.SlotId);
+                b.CloseElement();
+
+                // Script init ads
+                b.OpenElement(seq++, "script");
+                b.AddContent(seq++, "(adsbygoogle = window.adsbygoogle || []).push({});");
+                b.CloseElement();
+            };
+            return form;
+        }
+    }
+
+    private IJSObjectReference? _adsModule;
+
+    private bool _isClient = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isClient = true;
+            _adsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/AdsComponent.razor.js");
+            await _adsModule.InvokeVoidAsync("loadAdsense", AdSenseOptions.Value.ClientId);
+
+            StateHasChanged();
+        }
+    }
+}

@@ -9,8 +9,14 @@
     <meta name="description" content="@(_currentContent?.SeoDescriptions != null ? _currentContent?.SeoDescriptions : _currentContent?.Title)" />
 </HeadContent>
 
+
+<AdsComponent />
+
+
+
 <HxCard>
     <BodyTemplate>
+
         @if (_currentContent is not null)
         {
             <div class="d-md-flex flex-row justify-content-between align-items-center">
@@ -36,6 +42,11 @@
     </BodyTemplate>
 </HxCard>
 
+
+<AdsComponent />
+
+
+
 <HxCard CssClass="mt-2">
     <HeaderTemplate>
         <p class="h1 lead">Bình luận</p>
@@ -50,6 +61,11 @@
         <div id="disqus_thread"></div>
     </BodyTemplate>
 </HxCard>
+
+
+<AdsComponent />
+
+
 
 <HxCard CssClass="mt-2">
     <HeaderTemplate>
@@ -71,7 +87,6 @@
     public IJSObjectReference? _module;
 
     private bool _isLoading = false;
-
     private ContentDto? _currentContent = null;
 
     private string _bookmarkKey => $"article-{_currentContent?.Route}-scroll";
