@@ -5,6 +5,7 @@ $attribute: PostMetadata(Id = 2, Title = "Sử dụng Tailwind CSS trong Blazor"
 $layout: BlogContentLayout
 ---
 
+
 Tailwind CSS là một framework CSS hiện đại, giúp bạn xây dựng giao diện web linh hoạt, 
 nhanh chóng và đẹp mắt. Trong bài viết này, chúng ta sẽ cùng nhau tích hợp Tailwind CSS 
 vào một ứng dụng Blazor WebApp.

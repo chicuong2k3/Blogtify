@@ -119,6 +119,7 @@
             await _module.InvokeVoidAsync("addScrollListener", _bookmarkKey);
 
             await _module.InvokeVoidAsync("readingProgressInit", _dotNetRef, _contentRef);
+            await _module.InvokeVoidAsync("renderMath", _contentRef);
 
             NavigationManager.LocationChanged += OnLocationChanged;
             _isLoading = false;

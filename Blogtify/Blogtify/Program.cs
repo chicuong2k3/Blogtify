@@ -107,4 +107,6 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(Blogtify.Client._Imports).Assembly);
 
 app.MapControllers();
+app.MapGet("/health", () => Results.Ok("I am alive!"));
+
 app.Run();

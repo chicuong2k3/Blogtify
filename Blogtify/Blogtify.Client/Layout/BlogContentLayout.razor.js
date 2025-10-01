@@ -73,3 +73,10 @@ export function readingProgressInit(dotNetHelper, article) {
     window.addEventListener('scroll', update);
     update();
 }
+
+// render math formular
+export function renderMath (element) {
+    if (element) {
+        MathJax.typesetPromise([element]).catch((err) => console.error(err.message));
+    }
+}
