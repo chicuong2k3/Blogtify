@@ -5,6 +5,8 @@
 		<RuntimeIdentifiers>browser-wasm</RuntimeIdentifiers>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<TrimMode>full</TrimMode>
 		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
 		<Configurations>Debug;Release;ReleaseCompat</Configurations>
@@ -40,7 +42,7 @@
 
 	<ItemGroup>
 		<None Update="Components\AdsComponent.razor.js">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Update="Components\BackToTopButton.razor.js">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -6,20 +6,51 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    <link rel="stylesheet" href="Blogtify.styles.css" />
-    <link rel="stylesheet" href="css/prism.min.css" />
-    <link id="code-block-stylesheet" rel="stylesheet" href="css/prism-coy-without-shadows.min.css" />
-    <link rel="stylesheet" href="css/prism-line-numbers.min.css" />
-    <link rel="stylesheet" href="css/prism-show-language.min.css" />
-    <link rel="stylesheet" href="css/code-block.css" />
-    <link href="_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link id="theme-stylesheet" rel="stylesheet" href="css/theme-yeti.css" />
-    <link rel="stylesheet" href="css/app.css" />
+
+    <link rel="preload" href="css/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
+    <noscript><link rel="stylesheet" href="css/app.css" /></noscript>
+
+    <link rel="preload" href="Blogtify.styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
+    <noscript><link rel="stylesheet" href="Blogtify.styles.css" /></noscript>
+
+    <link rel="preload" href="_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
+    <noscript><link rel="stylesheet" href="_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css" /></noscript>
+
+    <link rel="preload" href="css/theme-yeti.css" as="style" media="print" onload="applyCSS(this)" id="theme-stylesheet" crossorigin>
+    <link rel="preload" href="css/prism.min.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
+    <link rel="preload" href="css/prism-coy-without-shadows.min.css" as="style" media="print" onload="applyCSS(this)" id="code-block-stylesheet" crossorigin>
+    <link rel="preload" href="css/prism-line-numbers.min.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
+    <link rel="preload" href="css/prism-show-language.min.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
+    <link rel="preload" href="css/code-block.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
+
+    <script>
+        function applyCSS(link) {
+            if (link.rel === 'preload') {
+                link.rel = 'stylesheet';
+                link.media = 'all';
+            }
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll('link[rel="preload"][as="style"]').forEach(applyCSS);
+        }, 100);
+    </script>
+
+    <script src="js/theme.js" defer></script>
+    <script src="js/app.js" defer></script>
+
+    <!-- Adsense: Lazy load after onload to reduce third-party block -->
+    <script>
+        window.addEventListener('load', () => {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6107540643501285';
+            script.crossOrigin = 'anonymous';
+            document.head.appendChild(script);
+        });
+    </script>
+
     <HeadOutlet @rendermode="InteractiveAuto" />
-    <script src="js/theme.js"></script>
-    <script src="js/app.js"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6107540643501285"
-            crossorigin="anonymous"></script>
 </head>
 
 <body class="line-numbers">
@@ -64,24 +95,23 @@
 
     @((MarkupString)@HxSetup.RenderBootstrapJavaScriptReference())
 
-    <script src="js/code-block.js"></script>
+    <script src="js/code-block.js" defer></script>
+    <script src="js/prism-core.min.js" defer></script>
+    <script src="js/prism-autoloader.min.js" defer></script>
+    <script src="js/prism-clike.min.js" defer></script>
+    <script src="js/prism-markup.min.js" defer></script>
+    <script src="js/prism-csharp.min.js" defer></script>
+    <script src="js/prism-yaml.min.js" defer></script>
+    <script src="js/prism-javascript.min.js" defer></script>
+    <script src="js/prism-typescript.min.js" defer></script>
+    <script src="js/prism-css.min.js" defer></script>
+    <script src="js/prism-bash.min.js" defer></script>
+    <script src="js/prism-python.min.js" defer></script>
+    <script src="js/prism-sql.min.js" defer></script>
+    <script src="js/prism-line-numbers.min.js" defer></script>
+    <script src="js/prism-show-language.min.js" defer></script>
 
-    <script src="js/prism-core.min.js"></script>
-    <script src="js/prism-autoloader.min.js"></script>
-    <script src="js/prism-clike.min.js"></script>
-    <script src="js/prism-markup.min.js"></script>
-    <script src="js/prism-csharp.min.js"></script>
-    <script src="js/prism-yaml.min.js"></script>
-    <script src="js/prism-javascript.min.js"></script>
-    <script src="js/prism-typescript.min.js"></script>
-    <script src="js/prism-css.min.js"></script>
-    <script src="js/prism-bash.min.js"></script>
-    <script src="js/prism-python.min.js"></script>
-    <script src="js/prism-sql.min.js"></script>
-    <script src="js/prism-line-numbers.min.js"></script>
-    <script src="js/prism-show-language.min.js"></script>
-
-    <script src="js/tex-chtml.js"></script>
+    <script async defer src="js/tex-chtml.js"></script>
 
 </body>
 
