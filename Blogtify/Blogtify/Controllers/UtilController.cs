@@ -11,4 +11,10 @@ public class UtilController : ControllerBase
     {
         return Ok();
     }
+
+    [HttpHead("/health")]
+    public IActionResult Health()
+    {
+        return Ok();
+    }
 }
