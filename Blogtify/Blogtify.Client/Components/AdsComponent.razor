@@ -36,13 +36,16 @@
     }
 
     private bool _isClient = false;
+    private IJSObjectReference? _module;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _isClient = true;
-            await JSRuntime.InvokeVoidAsync("eval", "(adsbygoogle = window.adsbygoogle || []).push({});");
+
+            _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/AdsComponent.razor.js");
+            await _module.InvokeVoidAsync("renderAd");
             StateHasChanged();
         }
     }
