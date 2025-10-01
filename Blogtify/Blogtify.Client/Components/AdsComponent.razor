@@ -1,9 +1,9 @@
 ﻿@using Microsoft.Extensions.Options
 @inject IOptions<AdSenseSettings> AdSenseOptions
+@inject IJSRuntime JSRuntime
 
 @if (_isClient)
 {
-
     <div>
         @Ads
     </div>
@@ -30,10 +30,6 @@
                 b.AddAttribute(seq++, "data-ad-slot", AdSenseOptions.Value.SlotId);
                 b.CloseElement();
 
-                // Script init ads
-                b.OpenElement(seq++, "script");
-                b.AddContent(seq++, "(adsbygoogle = window.adsbygoogle || []).push({});");
-                b.CloseElement();
             };
             return form;
         }
@@ -41,11 +37,12 @@
 
     private bool _isClient = false;
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _isClient = true;
+            await JSRuntime.InvokeVoidAsync("eval", "(adsbygoogle = window.adsbygoogle || []).push({});");
             StateHasChanged();
         }
     }

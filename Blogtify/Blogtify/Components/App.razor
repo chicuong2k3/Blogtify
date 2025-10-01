@@ -7,34 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
 
-    <link rel="preload" href="css/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
-    <noscript><link rel="stylesheet" href="css/app.css" /></noscript>
+    <link rel="stylesheet" href="css/app.css" crossorigin>
+    <link rel="stylesheet" href="Blogtify.styles.css" crossorigin>
+    <link rel="stylesheet" href="_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css" crossorigin>
 
-    <link rel="preload" href="Blogtify.styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
-    <noscript><link rel="stylesheet" href="Blogtify.styles.css" /></noscript>
-
-    <link rel="preload" href="_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" crossorigin>
-    <noscript><link rel="stylesheet" href="_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css" /></noscript>
-
-    <link rel="preload" href="css/theme-yeti.css" as="style" media="print" onload="applyCSS(this)" id="theme-stylesheet" crossorigin>
-    <link rel="preload" href="css/prism.min.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
-    <link rel="preload" href="css/prism-coy-without-shadows.min.css" as="style" media="print" onload="applyCSS(this)" id="code-block-stylesheet" crossorigin>
-    <link rel="preload" href="css/prism-line-numbers.min.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
-    <link rel="preload" href="css/prism-show-language.min.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
-    <link rel="preload" href="css/code-block.css" as="style" media="print" onload="applyCSS(this)" crossorigin>
-
-    <script>
-        function applyCSS(link) {
-            if (link.rel === 'preload') {
-                link.rel = 'stylesheet';
-                link.media = 'all';
-            }
-        }
-
-        setTimeout(() => {
-            document.querySelectorAll('link[rel="preload"][as="style"]').forEach(applyCSS);
-        }, 100);
-    </script>
+    <link rel="stylesheet" href="css/theme-yeti.css" media="print" onload="this.media='all'" id="theme-stylesheet" crossorigin>
+    <link rel="stylesheet" href="css/prism.min.css" media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="css/prism-coy-without-shadows.min.css" media="print" onload="this.media='all'" id="code-block-stylesheet" crossorigin>
+    <link rel="stylesheet" href="css/prism-line-numbers.min.css" media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="css/prism-show-language.min.css" media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="css/code-block.css" media="print" onload="this.media='all'" crossorigin>
 
     <script src="js/theme.js" defer></script>
     <script src="js/app.js" defer></script>
