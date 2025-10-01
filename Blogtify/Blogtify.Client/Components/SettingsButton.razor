@@ -124,22 +124,23 @@
 
     private HotKeysContext? _hotKeysContext;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
-
+        
             var selectedTheme = (await ThemeProvider.GetThemeAsync()).ToString() ?? "Yeti";
             await ChangeTheme(selectedTheme, false);
-
             var selectedFont = (await FontProvider.GetFontAsync()) ?? "Inter";
             await ChangeFont(selectedFont, false);
 
             var selectedFontSize = (await FontProvider.GetFontSizeAsync()) ?? "16px";
             await ChangeFontSize(selectedFontSize, false);
+        StateHasChanged();
+    }
 
-            StateHasChanged();
-
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
             _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/SettingsButton.razor.js");
 
             selfRef = DotNetObjectReference.Create<object>(this);

@@ -12,6 +12,11 @@ public class ServerHttpContextProxy(IHttpContextAccessor httpContextAccessor)
 
     public Task SetValueAsync(string key, string value, DateTimeOffset? expires = null)
     {
+        if (!IsSupported() || (_httpContextAccessor.HttpContext != null && _httpContextAccessor.HttpContext.Response.HasStarted)) 
+        {
+            return Task.CompletedTask;
+        }
+
         var options = new CookieOptions
         {
             Expires = expires ?? DateTimeOffset.UtcNow.AddMonths(1),

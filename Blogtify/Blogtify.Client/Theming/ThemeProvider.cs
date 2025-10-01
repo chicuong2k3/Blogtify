@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
 namespace Blogtify.Client.Theming;
@@ -10,6 +11,7 @@ public class ThemeProvider : IDisposable, IThemeProvider
     private readonly IJSRuntime _jsRuntime;
     private PersistingComponentStateSubscription _persistingComponentStateSubscription;
     private Theme? _theme;
+    private bool _cookiesSet = false;
 
     public ThemeProvider(
         IHttpContextProxy httpContextProxy,
@@ -19,7 +21,7 @@ public class ThemeProvider : IDisposable, IThemeProvider
         _httpContextProxy = httpContextProxy;
         _persistentComponentState = persistentComponentState;
         _jsRuntime = jsRuntime;
-        _persistingComponentStateSubscription = _persistentComponentState.RegisterOnPersisting(PersistTheme);
+        _persistingComponentStateSubscription = _persistentComponentState.RegisterOnPersisting(PersistTheme, RenderMode.InteractiveAuto);
     }
 
     public event ThemeChangedHandler? ThemeChanged;
@@ -29,9 +31,28 @@ public class ThemeProvider : IDisposable, IThemeProvider
         _theme = theme;
         ThemeChanged?.Invoke(theme);
 
-        await _httpContextProxy.SetValueAsync("Theme", theme.ToString());
+        if (!_cookiesSet && _httpContextProxy.IsSupported())
+        {
+            try
+            {
+                await _httpContextProxy.SetValueAsync("Theme", theme.ToString());
+                _cookiesSet = true;
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("Headers are read-only"))
+            {
+                _cookiesSet = true; 
+            }
+        }
 
-        await _jsRuntime.InvokeVoidAsync("themeSwitcher.setTheme", theme.ToString());
+        try
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "theme", theme.ToString());  // Lưu client-side
+            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setTheme", theme.ToString());  // Cập nhật CSS
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering") || ex.Message.Contains("Headers"))
+        {
+            // Bỏ qua lỗi JS/prerender
+        }
     }
 
     public async Task<Theme> GetThemeAsync()
@@ -46,20 +67,39 @@ public class ThemeProvider : IDisposable, IThemeProvider
 
     private async Task ResolveInitialTheme()
     {
-        if (_httpContextProxy.IsSupported()
-            && await _httpContextProxy.GetValueAsync("Theme") is string cookie
-            && Enum.TryParse<Theme>(cookie, ignoreCase: true, out var theme))
+        string? themeStr = null;
+        if (_httpContextProxy.IsSupported() && await _httpContextProxy.GetValueAsync("Theme") is string cookie)
         {
-            _theme = theme;
-        }
-        else if (_persistentComponentState.TryTakeFromJson<Theme>("Theme", out var restored))
-        {
-            _theme = restored;
+            themeStr = cookie;
         }
         else
         {
-            _theme = Theme.Yeti;
+            try
+            {
+                themeStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
+            }
+            catch { /* JS chưa sẵn sàng */ }
+
+            if (string.IsNullOrEmpty(themeStr) && _persistentComponentState.TryTakeFromJson<Theme>("Theme", out var restored))
+            {
+                themeStr = restored.ToString();
+            }
         }
+
+        if (Enum.TryParse<Theme>(themeStr, out var theme))
+        {
+            _theme = theme;
+        }
+        else
+        {
+            _theme = Theme.Yeti; 
+        }
+
+        try
+        {
+            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setTheme", _theme.Value.ToString());
+        }
+        catch (InvalidOperationException) { /* Bỏ qua prerender */ }
     }
 
     private async Task PersistTheme()
