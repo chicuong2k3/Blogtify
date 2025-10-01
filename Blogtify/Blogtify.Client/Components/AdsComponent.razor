@@ -2,50 +2,22 @@
 @inject IOptions<AdSenseSettings> AdSenseOptions
 @inject IJSRuntime JSRuntime
 
-@if (_isClient)
-{
-    <div>
-        @Ads
-    </div>
-}
+<div @ref="@_adContainer">
+</div>
 
 @code {
-    private RenderFragment Ads
-    {
-        get
-        {
-            RenderFragment form = b =>
-            {
-                var seq = 0;
-                b.OpenElement(seq++, "script");
-                b.AddAttribute(seq++, "async", true);
-                b.AddAttribute(seq++, "src", "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js");
-                b.CloseElement();
-
-                // Ad container
-                b.OpenElement(seq++, "ins");
-                b.AddAttribute(seq++, "class", "adsbygoogle");
-                b.AddAttribute(seq++, "style", "display:inline-block;width:728px;height:90px");
-                b.AddAttribute(seq++, "data-ad-client", AdSenseOptions.Value.ClientId);
-                b.AddAttribute(seq++, "data-ad-slot", AdSenseOptions.Value.SlotId);
-                b.CloseElement();
-
-            };
-            return form;
-        }
-    }
-
-    private bool _isClient = false;
+    private ElementReference _adContainer;
     private IJSObjectReference? _module;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _isClient = true;
-
             _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/AdsComponent.razor.js");
-            await _module.InvokeVoidAsync("renderAd");
+            await _module.InvokeVoidAsync("renderAd",
+                _adContainer,
+                AdSenseOptions.Value.ClientId,
+                AdSenseOptions.Value.SlotId);
             StateHasChanged();
         }
     }
