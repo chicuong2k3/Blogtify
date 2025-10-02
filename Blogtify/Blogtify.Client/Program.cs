@@ -10,8 +10,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 using var response = await new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
-}
-    .GetAsync("appsettings.json");
+}.GetAsync("appsettings.json");
 
 using var stream = await response.Content.ReadAsStreamAsync();
 builder.Configuration.AddJsonStream(stream);

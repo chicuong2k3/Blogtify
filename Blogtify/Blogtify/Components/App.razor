@@ -32,11 +32,11 @@
         });
     </script>
 
-    <HeadOutlet @rendermode="InteractiveAuto" />
+    <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
 
 <body class="line-numbers">
-    <Routes @rendermode="InteractiveAuto" />
+    <Routes @rendermode="InteractiveWebAssembly" />
     <script src="_framework/blazor.web.js" autostart="false"></script>
     <script>
         async function hasSimdSupport() {
