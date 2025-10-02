@@ -11,7 +11,7 @@
     <BodyTemplate>
         <div class="row">
             <div class="col-8 col-md-9"></div>
-            <div class="col-4 col-md-3">
+            <div class="col-6 col-md-3">
                 <HxSelect TItem="SortFilter"
                           TValue="string"
                           Data="_sortFilters"
@@ -26,9 +26,7 @@
         <div class="row">
             @foreach (var content in _contents)
             {
-                <div class="mb-2">
-                    <ContentCard Content="@content" />
-                </div>
+                <ContentCard Content="@content" @key="@content.GetHashCode()" />
             }
         </div>
 

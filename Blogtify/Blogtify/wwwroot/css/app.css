@@ -68,9 +68,6 @@ html {
     padding: 0;
     background-color: #f4f4f4;
     font-display: swap;
-}
-
-body {
     font-family: var(--app-font-family, 'Inter') !important;
-    font-size: var(--app-font-size, 16px) !important;
+    font-size: var(--app-font-size, 14px) !important;
 }

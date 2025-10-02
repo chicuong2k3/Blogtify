@@ -1,6 +1,11 @@
 ﻿
-<a class="fw-bold text-truncate text-body" href="@Content.Route">
-    @Content.Title
+<a class="d-inline-block text-truncate"
+   href="@Content.Route"
+   title="@Content.Title"
+   itemprop="url"
+   aria-label="@Content.Title"
+   rel="bookmark">
+    <span itemprop="headline" class="d-inline-block text-truncate text-contrast">@Content.Title</span>
 </a>
 
 

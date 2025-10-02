@@ -1,0 +1,7 @@
+
+
+
+a:hover span {
+    color: var(--text-primary);
+    text-decoration: underline;
+}

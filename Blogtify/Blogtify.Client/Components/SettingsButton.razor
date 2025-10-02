@@ -132,7 +132,7 @@
             var selectedFont = (await FontProvider.GetFontAsync()) ?? "Inter";
             await ChangeFont(selectedFont, false);
 
-            var selectedFontSize = (await FontProvider.GetFontSizeAsync()) ?? "16px";
+            var selectedFontSize = (await FontProvider.GetFontSizeAsync()) ?? "14px";
             await ChangeFontSize(selectedFontSize, false);
         StateHasChanged();
     }
