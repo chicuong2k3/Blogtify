@@ -1,6 +1,10 @@
 export function renderAd(container, client, slot) {
     if (!container) return;
 
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
     container.innerHTML = "";
 
     const ins = document.createElement("ins");
@@ -10,12 +14,14 @@ export function renderAd(container, client, slot) {
     ins.style.height = "90px";
     ins.setAttribute("data-ad-client", client);
     ins.setAttribute("data-ad-slot", slot);
-
+    ins.id = "ad-" + Math.random().toString(36).substring(2);
     container.appendChild(ins);
 
-    try {
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-        console.warn("Adsense error:", e);
-    }
+    setTimeout(() => {
+        try {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+            console.warn("Adsense error:", e);
+        }
+    }, 100);
 }
