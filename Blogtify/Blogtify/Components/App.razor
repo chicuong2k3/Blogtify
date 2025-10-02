@@ -53,27 +53,25 @@
           }
         }
 
-        window.__wasmCompatPath = null;
+        (async () => {
+          const simd = await hasSimdSupport();
 
-        hasSimdSupport().then(supported => {
-          if (!supported) {
-            window.__wasmCompatPath = "_frameworkCompat/";
-          }
+          const compatPath = simd ? null : "_frameworkCompat/";
 
           Blazor.start({
+            environment: "Auto",
             configureRuntime: (builder) => {
               builder.loadBootResource = (type, name, defaultUri, integrity) => {
-                if (window.__wasmCompatPath) {
-                  if (type === "dotnetjs" || type === "assembly" || type === "pdb" || type === "wasm") {
-                    return window.__wasmCompatPath + name;
-                  }
+                if (compatPath && (type === "dotnetjs" || type === "assembly" || type === "pdb" || type === "wasm")) {
+                  return compatPath + name;
                 }
                 return defaultUri;
               };
             }
           });
-        });
+        })();
     </script>
+
 
     @((MarkupString)@HxSetup.RenderBootstrapJavaScriptReference())
 
