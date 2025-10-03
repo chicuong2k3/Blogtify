@@ -5,7 +5,7 @@
 		<RuntimeIdentifiers>browser-wasm</RuntimeIdentifiers>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<RunAOTCompilation>false</RunAOTCompilation>
+		<RunAOTCompilation>true</RunAOTCompilation>
 		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
 		<Configurations>Debug;Release;ReleaseCompat</Configurations>
