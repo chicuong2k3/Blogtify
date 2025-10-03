@@ -6,21 +6,17 @@ namespace Blogtify.Client.Theming;
 
 public class FontProvider : IDisposable, IFontProvider
 {
-    private readonly IHttpContextProxy _httpContextProxy;
     private readonly PersistentComponentState _persistentComponentState;
     private readonly IJSRuntime _jsRuntime;
     private PersistingComponentStateSubscription _persistingComponentStateSubscription;
 
     private string? _font;
     private string? _fontSize;
-    private bool _cookiesSet = false;
 
     public FontProvider(
-        IHttpContextProxy httpContextProxy,
         PersistentComponentState persistentComponentState,
         IJSRuntime jsRuntime)
     {
-        _httpContextProxy = httpContextProxy;
         _persistentComponentState = persistentComponentState;
         _jsRuntime = jsRuntime;
 
@@ -36,29 +32,15 @@ public class FontProvider : IDisposable, IFontProvider
         _font = font;
         FontChanged?.Invoke(font);
 
-        if (!_cookiesSet && _httpContextProxy.IsSupported())
-        {
-            try
-            {
-                await _httpContextProxy.SetValueAsync("Font", font);
-                _cookiesSet = true;
-            }
-            catch (InvalidOperationException ex) when (ex.Message.Contains("Headers are read-only"))
-            {
-                _cookiesSet = true;  // Bỏ qua, dùng fallback
-            }
-        }
-
-        // Áp dụng qua JS (localStorage + font load), bỏ qua prerender/headers
         try
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "font", font);
             await _jsRuntime.InvokeVoidAsync("themeSwitcher.loadGoogleFont", font);
             await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFont", font);
         }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering") || ex.Message.Contains("Headers"))
+        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering"))
         {
-            // Bỏ qua lỗi
+            // Ignore errors during prerender
         }
     }
 
@@ -74,33 +56,33 @@ public class FontProvider : IDisposable, IFontProvider
     private async Task ResolveInitialFont()
     {
         string? fontStr = null;
-        if (_httpContextProxy.IsSupported() && await _httpContextProxy.GetValueAsync("Font") is string cookie)
-        {
-            fontStr = cookie;
-        }
-        else
-        {
-            try
-            {
-                fontStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "font");
-            }
-            catch { /* JS chưa sẵn sàng */ }
 
-            if (string.IsNullOrEmpty(fontStr) && _persistentComponentState.TryTakeFromJson<string>("Font", out var restored))
-            {
-                fontStr = restored;
-            }
+        try
+        {
+            fontStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "font");
+        }
+        catch
+        {
+            // JS not ready during prerender
+        }
+
+        if (string.IsNullOrEmpty(fontStr) &&
+            _persistentComponentState.TryTakeFromJson<string>("Font", out var restored))
+        {
+            fontStr = restored;
         }
 
         _font = !string.IsNullOrEmpty(fontStr) ? fontStr : "Inter";
 
-        // Áp dụng initial font qua JS
         try
         {
             await _jsRuntime.InvokeVoidAsync("themeSwitcher.loadGoogleFont", _font);
             await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFont", _font);
         }
-        catch (InvalidOperationException) { /* Bỏ qua prerender */ }
+        catch (InvalidOperationException)
+        {
+            // Ignore prerender
+        }
     }
 
     public async Task SetFontSizeAsync(string size)
@@ -108,30 +90,14 @@ public class FontProvider : IDisposable, IFontProvider
         _fontSize = size;
         FontSizeChanged?.Invoke(size);
 
-        // Set cookie chỉ lần đầu và nếu headers cho phép
-        if (!_cookiesSet && _httpContextProxy.IsSupported())
-        {
-            try
-            {
-                await _httpContextProxy.SetValueAsync("FontSize", size);
-                _cookiesSet = true;
-            }
-            catch (InvalidOperationException ex) when (ex.Message.Contains("Headers are read-only"))
-            {
-                _cookiesSet = true;  // Bỏ qua
-            }
-        }
-
-
-        // Áp dụng qua JS (localStorage), bỏ qua prerender/headers
         try
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "fontSize", size);
             await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFontSize", size);
         }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering") || ex.Message.Contains("Headers"))
+        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering"))
         {
-            // Bỏ qua lỗi
+            // Ignore prerender
         }
     }
 
@@ -147,34 +113,33 @@ public class FontProvider : IDisposable, IFontProvider
 
     private async Task ResolveInitialFontSize()
     {
-        // Ưu tiên: Cookie > localStorage > State > Default
         string? sizeStr = null;
-        if (_httpContextProxy.IsSupported() && await _httpContextProxy.GetValueAsync("FontSize") is string cookie)
-        {
-            sizeStr = cookie;
-        }
-        else
-        {
-            try
-            {
-                sizeStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "fontSize");
-            }
-            catch { /* JS chưa sẵn sàng */ }
 
-            if (string.IsNullOrEmpty(sizeStr) && _persistentComponentState.TryTakeFromJson<string>("FontSize", out var restored))
-            {
-                sizeStr = restored;
-            }
+        try
+        {
+            sizeStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "fontSize");
+        }
+        catch
+        {
+            // JS not ready during prerender
+        }
+
+        if (string.IsNullOrEmpty(sizeStr) &&
+            _persistentComponentState.TryTakeFromJson<string>("FontSize", out var restored))
+        {
+            sizeStr = restored;
         }
 
         _fontSize = !string.IsNullOrEmpty(sizeStr) ? sizeStr : "16px";
 
-        // Áp dụng initial size qua JS
         try
         {
             await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFontSize", _fontSize);
         }
-        catch (InvalidOperationException) { /* Bỏ qua prerender */ }
+        catch (InvalidOperationException)
+        {
+            // Ignore prerender
+        }
     }
 
     private async Task PersistFontAndSize()
