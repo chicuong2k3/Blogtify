@@ -94,21 +94,11 @@ if (app.Environment.IsDevelopment())
 {
 }
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
 app.UseHttpsRedirection();
 app.UseCors();
 
 app.UseResponseCompression();
-app.UseStaticFiles(new StaticFileOptions
-{
-    OnPrepareResponse = ctx =>
-    {
-        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=31536000,immutable");
-    }
-});
+app.MapStaticAssets();
 
 // Enable the .dat file extension (required to serve icudt.dat from _frameworkCompat/
 var provider = new FileExtensionContentTypeProvider();

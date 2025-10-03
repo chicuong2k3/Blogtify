@@ -7,19 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
 
-    <link rel="stylesheet" href="css/app.css" crossorigin>
-    <link rel="stylesheet" href="Blogtify.styles.css" crossorigin>
-    <link rel="stylesheet" href="_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css" crossorigin>
+    <link rel="stylesheet" href="@Assets["css/app.css"]" crossorigin>
+    <link rel="stylesheet" href="@Assets["Blogtify.styles.css"]" crossorigin>
+    <link href="@Assets["_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css"]" rel="stylesheet" />
 
-    <link rel="stylesheet" href="css/theme-yeti.css" media="print" onload="this.media='all'" id="theme-stylesheet" crossorigin>
-    <link rel="stylesheet" href="css/prism.min.css" media="print" onload="this.media='all'" crossorigin>
-    <link rel="stylesheet" href="css/prism-coy-without-shadows.min.css" media="print" onload="this.media='all'" id="code-block-stylesheet" crossorigin>
-    <link rel="stylesheet" href="css/prism-line-numbers.min.css" media="print" onload="this.media='all'" crossorigin>
-    <link rel="stylesheet" href="css/prism-show-language.min.css" media="print" onload="this.media='all'" crossorigin>
-    <link rel="stylesheet" href="css/code-block.css" media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="@Assets["css/theme-yeti.css"]" media="print" onload="this.media='all'" id="theme-stylesheet" crossorigin>
+    <link rel="stylesheet" href="@Assets["css/prism.min.css"]" media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="@Assets["css/prism-coy-without-shadows.min.css"]" media="print" onload="this.media='all'" id="code-block-stylesheet" crossorigin>
+    <link rel="stylesheet" href="@Assets["css/prism-line-numbers.min.css"]" media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="@Assets["css/prism-show-language.min.css"]" media="print" onload="this.media='all'" crossorigin>
+    <link rel="stylesheet" href="@Assets["css/code-block.css"]" media="print" onload="this.media='all'" crossorigin>
 
-    <script src="js/theme.js" defer></script>
-    <script src="js/app.js" defer></script>
+    <script src="@Assets["js/theme.js"]" defer></script>
+    <script src="@Assets["js/app.js"]" defer></script>
 
     <!-- Adsense: Lazy load after onload to reduce third-party block -->
     <script>
@@ -38,7 +38,7 @@
 <body class="line-numbers">
     <Routes @rendermode="InteractiveWebAssembly" />
     <script src="_framework/blazor.web.js" autostart="false"></script>
-    <script webworker-enabled src="js/wasm-feature-detect.1.6.1.js"></script>
+    <script webworker-enabled src="@Assets["js/wasm-feature-detect.1.6.1.js"]"></script>
     <script webworker-enabled>
         (async () => {
             var url = new URL(location.href);
@@ -93,23 +93,23 @@
 
     @((MarkupString)@HxSetup.RenderBootstrapJavaScriptReference())
 
-    <script src="js/code-block.js" defer></script>
-    <script src="js/prism-core.min.js" defer></script>
-    <script src="js/prism-autoloader.min.js" defer></script>
-    <script src="js/prism-clike.min.js" defer></script>
-    <script src="js/prism-markup.min.js" defer></script>
-    <script src="js/prism-csharp.min.js" defer></script>
-    <script src="js/prism-yaml.min.js" defer></script>
-    <script src="js/prism-javascript.min.js" defer></script>
-    <script src="js/prism-typescript.min.js" defer></script>
-    <script src="js/prism-css.min.js" defer></script>
-    <script src="js/prism-bash.min.js" defer></script>
-    <script src="js/prism-python.min.js" defer></script>
-    <script src="js/prism-sql.min.js" defer></script>
-    <script src="js/prism-line-numbers.min.js" defer></script>
-    <script src="js/prism-show-language.min.js" defer></script>
+    <script src="@Assets["js/code-block.js"]" defer></script>
+    <script src="@Assets["js/prism-core.min.js"]" defer></script>
+    <script src="@Assets["js/prism-autoloader.min.js"]" defer></script>
+    <script src="@Assets["js/prism-clike.min.js"]" defer></script>
+    <script src="@Assets["js/prism-markup.min.js"]" defer></script>
+    <script src="@Assets["js/prism-csharp.min.js"]" defer></script>
+    <script src="@Assets["js/prism-yaml.min.js"]" defer></script>
+    <script src="@Assets["js/prism-javascript.min.js"]" defer></script>
+    <script src="@Assets["js/prism-typescript.min.js"]" defer></script>
+    <script src="@Assets["js/prism-css.min.js"]" defer></script>
+    <script src="@Assets["js/prism-bash.min.js"]" defer></script>
+    <script src="@Assets["js/prism-python.min.js"]" defer></script>
+    <script src="@Assets["js/prism-sql.min.js"]" defer></script>
+    <script src="@Assets["js/prism-line-numbers.min.js"]" defer></script>
+    <script src="@Assets["js/prism-show-language.min.js"]" defer></script>
 
-    <script async defer src="js/tex-chtml.js"></script>
+    <script async defer src="@Assets["js/tex-chtml.js"]"></script>
 
 </body>
 
