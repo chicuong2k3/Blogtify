@@ -1,4 +1,4 @@
-export function renderAd(container, client, slot) {
+export function renderAd(container, client, slot, layoutKey) {
     if (!container) return;
 
     while (container.firstChild) {
@@ -9,9 +9,9 @@ export function renderAd(container, client, slot) {
 
     const ins = document.createElement("ins");
     ins.className = "adsbygoogle";
-    ins.style.display = "inline-block";
-    ins.style.width = "728px";
-    ins.style.height = "90px";
+    ins.style.display = "block";
+    ins.setAttribute("data-ad-format", "fluid");
+    ins.setAttribute("data-ad-layout-key", layoutKey);
     ins.setAttribute("data-ad-client", client);
     ins.setAttribute("data-ad-slot", slot);
     ins.id = "ad-" + Math.random().toString(36).substring(2);
