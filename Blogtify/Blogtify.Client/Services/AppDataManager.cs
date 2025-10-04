@@ -70,7 +70,7 @@ public class AppDataManager
                 .OrderBy(p => p.LastModified ?? DateTime.MinValue)
                 .ToList(),
             "desc" => result
-                .OrderBy(p => p.LastModified ?? DateTime.MinValue)
+                .OrderByDescending(p => p.LastModified ?? DateTime.MinValue)
                 .ToList(),
             _ => result.OrderBy(p => p.LastModified ?? DateTime.MinValue).ToList()
         };
