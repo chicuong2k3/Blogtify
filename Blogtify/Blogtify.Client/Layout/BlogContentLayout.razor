@@ -4,15 +4,18 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 @inject AppDataManager AppDataManager
+@using Microsoft.Extensions.Options
+@inject IOptions<AdSenseSettings> AdSenseOptions
 
 <HeadContent>
     <meta name="description" content="@(_currentContent?.SeoDescriptions != null ? _currentContent?.SeoDescriptions : _currentContent?.Title)" />
 </HeadContent>
 
 
-<AdsComponent />
 
 
+<AdsComponent Type="AdsComponent.AdsType.Display"
+              SlotId="@AdSenseOptions.Value.DisplaySlotId" />
 
 <HxCard>
     <BodyTemplate>
@@ -43,8 +46,6 @@
 </HxCard>
 
 
-<AdsComponent />
-
 
 
 <HxCard CssClass="mt-2">
@@ -62,9 +63,8 @@
     </BodyTemplate>
 </HxCard>
 
-
-<AdsComponent />
-
+<AdsComponent Type="AdsComponent.AdsType.Display"
+              SlotId="@AdSenseOptions.Value.DisplaySlotId" />
 
 
 <HxCard CssClass="mt-2">
@@ -75,6 +75,16 @@
         <RelatedPosts Content="@_currentContent" />
     </BodyTemplate>
 </HxCard>
+
+
+<AdsComponent Type="AdsComponent.AdsType.InFeed"
+              SlotId="@AdSenseOptions.Value.InFeedSlotId"
+              LayoutKey="@AdSenseOptions.Value.InFeedLayoutKey" />
+
+
+
+<AdsComponent Type="AdsComponent.AdsType.InArticle"
+              SlotId="@AdSenseOptions.Value.InArticleSlotId" />
 
 <div class="reading-progress-container">
     <HxProgress>
