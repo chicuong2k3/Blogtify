@@ -17,7 +17,8 @@
             await _module.InvokeVoidAsync("renderAd",
                 _adContainer,
                 AdSenseOptions.Value.ClientId,
-                AdSenseOptions.Value.SlotId);
+                AdSenseOptions.Value.SlotId,
+                AdSenseOptions.Value.LayoutKey);
         }
     }
 }
