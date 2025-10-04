@@ -3,6 +3,8 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject AppDataManager AppDataManager
+@using Microsoft.Extensions.Options
+@inject IOptions<AdSenseSettings> AdSenseOptions
 
 <PageTitle>Code Magic</PageTitle>
 
@@ -77,6 +79,16 @@
         </div>
 
         <div class="my-2">
+
+            <AdsComponent Type="AdsComponent.AdsType.Multiplex"
+                          SlotId="@AdSenseOptions.Value.MultiplexSlotId" />
+
+            <AdsComponent Type="AdsComponent.AdsType.Multiplex"
+                          SlotId="@AdSenseOptions.Value.MultiplexSlotId" />
+        </div>
+
+        <div class="my-2">
+
             <Footer />
         </div>
     </div>
