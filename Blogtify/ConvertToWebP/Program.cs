@@ -2,12 +2,13 @@
 using SixLabors.ImageSharp.Formats.Webp;
 using System.IO;
 
-var files = Directory.GetFiles("content", "*.*", SearchOption.AllDirectories)
-    .Where(f => f.EndsWith(".png") || f.EndsWith(".jpg") || f.EndsWith(".jpeg") || f.EndsWith(".gif"));
+string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Blogtify.Client"));
+string contentPath = Path.Combine(projectRoot, "Content");
 
-foreach (var file in files)
+if (!Directory.Exists(contentPath))
 {
-    using var image = SixLabors.ImageSharp.Image.Load(file);
-    var output = Path.Combine("wwwroot", Path.GetFileNameWithoutExtension(file) + ".webp");
-    image.Save(output, new WebpEncoder());
+    Console.WriteLine($"Folder not found: {contentPath}");
+    return;
 }
+
+var files = Directory.GetFiles(contentPath, "*.*", SearchOption.AllDirectories);
