@@ -60,10 +60,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ImageFiles Include="content\**\**\*.png;content\**\**\*.jpg;content\**\**\*.jpeg;content\**\**\*.gif;content\**\**\*.svg;content\**\**\*.gif;content\**\**\*.webp" />
+		<ImageFiles Include="content\**\*.png;content\**\*.jpg;content\**\*.jpeg;content\**\*.gif" />
 	</ItemGroup>
 
-	<Target Name="CopyAllImages" AfterTargets="Build">
-		<Copy SourceFiles="@(ImageFiles)" DestinationFolder="$(ProjectDir)wwwroot" SkipUnchangedFiles="true" />
+	<Target Name="ConvertImagesToWebP" AfterTargets="Build">
+		<Exec Command="dotnet run --project ../ConvertToWebP/ConvertToWebP.csproj" />
 	</Target>
 </Project>
