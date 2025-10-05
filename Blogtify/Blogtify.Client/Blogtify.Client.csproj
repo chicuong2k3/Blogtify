@@ -7,6 +7,12 @@
 		<Nullable>enable</Nullable>
 		<RunAOTCompilation>true</RunAOTCompilation>
 		<BlazorEnableLinker>true</BlazorEnableLinker>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>link</TrimMode>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<PublishSingleFile>true</PublishSingleFile>
+		<BlazorWebAssemblyEnableCompression>true</BlazorWebAssemblyEnableCompression>
+		<BlazorWebAssemblyEnableBootResourceCompression>true</BlazorWebAssemblyEnableBootResourceCompression>
 		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
 		<Configurations>Debug;Release;ReleaseCompat</Configurations>

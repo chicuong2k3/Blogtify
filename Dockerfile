@@ -36,7 +36,16 @@ RUN dotnet publish "Blogtify.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:
 
 # Publish client ReleaseCompat
 WORKDIR "/src/Blogtify/Blogtify.Client"
-RUN dotnet publish "Blogtify.Client.csproj" -c ReleaseCompat -o /app/publishCompat --no-restore
+RUN dotnet publish "Blogtify.Client.csproj" \
+    -c ReleaseCompat \
+    -o /app/publishCompat \
+    --no-restore \
+    /p:RunAOTCompilation=true \
+    /p:BlazorEnableLinker=true \
+    /p:PublishTrimmed=true \
+    /p:PublishSingleFile=true \
+    /p:BlazorWebAssemblyEnableCompression=true \
+    /p:BlazorWebAssemblyEnableBootResourceCompression=true
 
 # Copy compat framework into server's publish
 RUN mkdir -p /app/publish/wwwroot/_frameworkCompat && \
