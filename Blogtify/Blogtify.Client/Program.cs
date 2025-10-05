@@ -4,6 +4,7 @@ using Blogtify.Client.Theming;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using PlayVerse.Web.Client.Auth;
+using System.Diagnostics.CodeAnalysis;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -30,3 +31,9 @@ builder.Services.AddCommonServices(builder.HostEnvironment, null);
 //builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
 await builder.Build().RunAsync();
+
+public static class LinkerPreserve
+{
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Routes))]
+    public static void PreserveRoutes() { }
+}
