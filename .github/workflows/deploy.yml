@@ -30,7 +30,7 @@ jobs:
         run: dotnet publish Blogtify/Blogtify/Blogtify.csproj -c Release -o ./publish
 
       - name: Publish Client ReleaseCompat
-        run: dotnet publish Blogtify/Blogtify.Client/Blogtify.Client.csproj -c ReleaseCompat -o ./publishCompat --no-restore /p:RunAOTCompilation=true /p:BlazorEnableLinker=true /p:BlazorWebAssemblyEnableCompression=true /p:BlazorWebAssemblyEnableBootResourceCompression=true
+        run: dotnet publish Blogtify/Blogtify.Client/Blogtify.Client.csproj -c ReleaseCompat -o ./publishCompat --no-restore
 
 
       - name: Copy compat framework

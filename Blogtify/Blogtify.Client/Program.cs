@@ -8,6 +8,12 @@ using System.Diagnostics.CodeAnalysis;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+#if DEBUG
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+#else
+    builder.Logging.SetMinimumLevel(LogLevel.None);
+#endif
+
 using var response = await new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
