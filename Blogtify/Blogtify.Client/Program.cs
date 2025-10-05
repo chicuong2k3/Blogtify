@@ -29,11 +29,3 @@ builder.Services.AddCommonServices(builder.HostEnvironment, null);
 //});
 //builder.Services.AddCascadingAuthenticationState();
 //builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
-
-await builder.Build().RunAsync();
-
-public static class LinkerPreserve
-{
-    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Routes))]
-    public static void PreserveRoutes() { }
-}
