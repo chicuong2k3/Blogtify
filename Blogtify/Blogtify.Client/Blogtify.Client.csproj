@@ -67,7 +67,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ImageFiles Include="content\**\*.png;content\**\*.jpg;content\**\*.jpeg;content\**\*.gif" />
+		<ImageFiles Include="Content\**\*.png;Content\**\*.jpg;Content\**\*.jpeg;Content\**\*.gif" />
 	</ItemGroup>
 
 	<Target Name="ConvertImagesToWebP" AfterTargets="Build">
