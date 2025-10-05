@@ -20,18 +20,6 @@
 
     <script src="@Assets["js/theme.js"]" defer></script>
     <script src="@Assets["js/app.js"]" defer></script>
-
-    <!-- Adsense: Lazy load after onload to reduce third-party block -->
-    <script>
-        window.addEventListener('load', () => {
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6107540643501285';
-            script.crossOrigin = 'anonymous';
-            document.head.appendChild(script);
-        });
-    </script>
-
     <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
 
@@ -93,9 +81,9 @@
 
     @((MarkupString)@HxSetup.RenderBootstrapJavaScriptReference())
 
-    <script src="@Assets["js/code-block.js"]"></script>
-    <script src="@Assets["js/prism-core.min.js"]"></script>
-    <script src="@Assets["js/prism-autoloader.min.js"]"></script>
+    <script src="@Assets["js/code-block.js"]" defer></script>
+    <script src="@Assets["js/prism-core.min.js"]" defer></script>
+    <script src="@Assets["js/prism-autoloader.min.js"]" defer></script>
     <script src="@Assets["js/prism-clike.min.js"]" defer></script>
     <script src="@Assets["js/prism-markup.min.js"]" defer></script>
     <script src="@Assets["js/prism-csharp.min.js"]" defer></script>
@@ -106,10 +94,35 @@
     <script src="@Assets["js/prism-bash.min.js"]" defer></script>
     <script src="@Assets["js/prism-python.min.js"]" defer></script>
     <script src="@Assets["js/prism-sql.min.js"]" defer></script>
+    <script src="@Assets["js/prism-http.min.js"]" defer></script>
     <script src="@Assets["js/prism-line-numbers.min.js"]" defer></script>
     <script src="@Assets["js/prism-show-language.min.js"]" defer></script>
 
-    <script async defer src="@Assets["js/tex-chtml.js"]"></script>
+    <!-- Adsense: Lazy load after onload to reduce third-party block -->
+    <script>
+        window.addEventListener('load', () => {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6107540643501285';
+            script.crossOrigin = 'anonymous';
+            document.head.appendChild(script);
+        });
+    </script>
+
+    <script>
+        function initMath() {
+                window.mathjaxReady.then((MathJax) => {
+                    MathJax.typesetPromise().catch(err => console.error('MathJax typeset error:', err));
+                }).catch(err => console.error('MathJax load error:', err));
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) initMath();
+            });
+        });
+        document.querySelectorAll('.math-block').forEach(el => observer.observe(el));
+    </script>
 
 </body>
 

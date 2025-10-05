@@ -75,8 +75,10 @@ export function readingProgressInit(dotNetHelper, article) {
 }
 
 // render math formular
-export function renderMath (element) {
-    if (element) {
-        MathJax.typesetPromise([element]).catch((err) => console.error(err.message));
-    }
+export function renderMath(element) {
+    if (!element) return;
+
+    window.mathjaxReady.then((MathJax) => {
+        MathJax.typesetPromise([element]).catch(err => console.error(err.message));
+    }).catch(err => console.error('MathJax load error:', err));
 }

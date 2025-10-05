@@ -14,3 +14,27 @@ window.MathJax = {
         fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
     }
 };
+
+window.mathjaxReady = new Promise((resolve, reject) => {
+    function loadMathJax() {
+        if (window.mathInited) {
+            resolve(MathJax);
+            return;
+        }
+
+        window.mathInited = true;
+        const script = document.createElement('script');
+        script.src = '/js/tex-chtml.js';
+        script.onload = () => {
+            if (window.MathJax && MathJax.startup && MathJax.startup.promise) {
+                MathJax.startup.promise.then(() => resolve(MathJax))
+                    .catch(err => reject(err));
+            } else {
+                reject(new Error('MathJax failed to load'));
+            }
+        };
+        document.head.appendChild(script);
+    }
+
+    loadMathJax();
+});

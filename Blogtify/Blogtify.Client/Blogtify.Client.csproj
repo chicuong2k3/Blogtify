@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RunAOTCompilation>true</RunAOTCompilation>
+		<BlazorEnableLinker>true</BlazorEnableLinker>
 		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
 		<Configurations>Debug;Release;ReleaseCompat</Configurations>
