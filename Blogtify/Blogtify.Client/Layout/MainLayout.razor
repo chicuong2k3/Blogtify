@@ -33,7 +33,7 @@
         <div class="row pt-4 mt-4">
 
             <!-- Sidebar desktop -->
-            <div class="col-lg-2 p-0 d-none d-lg-block">
+            <div class="col-lg-3 p-0 d-none d-lg-block">
                 <div class="sidebar desktop">
                     <HxTreeView Items="@sidebarItems"
                                 ItemInitialExpandedSelector="@(p => p.Children.Any())"
@@ -73,7 +73,7 @@
             </HxOffcanvas>
 
             <!-- Main body -->
-            <main class="col-lg-10 ps-2 main-content">
+            <main class="col-lg-9 ps-2 main-content">
                 @Body
             </main>
         </div>

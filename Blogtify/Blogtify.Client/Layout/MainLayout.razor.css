@@ -6,10 +6,9 @@
     position: fixed;
     top: 84px;
     left: 0;
-    width: 100%;
+    width: 25%;
     overflow-y: auto;
 }
-
 
 .sidebar ::deep .hx-tree-view-item-expander {
     transition: transform 0.3s ease;
