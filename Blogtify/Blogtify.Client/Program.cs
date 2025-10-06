@@ -8,11 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-#if DEBUG
-builder.Logging.SetMinimumLevel(LogLevel.Debug);
-#else
-    builder.Logging.SetMinimumLevel(LogLevel.None);
-#endif
 
 using var response = await new HttpClient
 {
@@ -35,3 +30,5 @@ builder.Services.AddCommonServices(builder.HostEnvironment, null);
 //});
 //builder.Services.AddCascadingAuthenticationState();
 //builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+
+await builder.Build().RunAsync();

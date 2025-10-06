@@ -124,23 +124,19 @@
 
     private HotKeysContext? _hotKeysContext;
 
-    protected override async Task OnInitializedAsync()
-    {
-        
-            var selectedTheme = (await ThemeProvider.GetThemeAsync()).ToString() ?? "Yeti";
-            await ChangeTheme(selectedTheme, false);
-            var selectedFont = (await FontProvider.GetFontAsync()) ?? "Inter";
-            await ChangeFont(selectedFont, false);
-
-            var selectedFontSize = (await FontProvider.GetFontSizeAsync()) ?? "14px";
-            await ChangeFontSize(selectedFontSize, false);
-        StateHasChanged();
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            var selectedTheme = (await ThemeProvider.GetThemeAsync()).ToString();
+            await ChangeTheme(selectedTheme, false);
+            var selectedFont = await FontProvider.GetFontAsync();
+            await ChangeFont(selectedFont, false);
+
+            var selectedFontSize = await FontProvider.GetFontSizeAsync();
+            await ChangeFontSize(selectedFontSize, false);
+            StateHasChanged();
+
             _module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./Components/SettingsButton.razor.js");
 
             selfRef = DotNetObjectReference.Create<object>(this);
@@ -166,23 +162,22 @@
 
         var themeEnum = Enum.Parse<Theme>(theme);
         await ThemeProvider.SetThemeAsync(themeEnum);
-        StateHasChanged();
+        await JSRuntime.InvokeVoidAsync("themeSwitcher.setTheme", selectedTheme.ToString());
     }
 
     private async Task ChangeFont(string font, bool closeMenu = true)
     {
         selectedFont = font;
-
         await FontProvider.SetFontAsync(font);
-        StateHasChanged();
+        await JSRuntime.InvokeVoidAsync("themeSwitcher.loadGoogleFont", selectedFont);
+        await JSRuntime.InvokeVoidAsync("themeSwitcher.setFont", selectedFont);
     }
 
     private async Task ChangeFontSize(string size, bool closeMenu = true)
     {
         selectedFontSize = size;
-
         await FontProvider.SetFontSizeAsync(size);
-        StateHasChanged();
+        await JSRuntime.InvokeVoidAsync("themeSwitcher.setFontSize", selectedFontSize);
     }
 
     public async ValueTask DisposeAsync()

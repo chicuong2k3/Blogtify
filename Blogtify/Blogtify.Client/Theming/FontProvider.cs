@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Blogtify.Client.Theming;
 
 public class FontProvider : IDisposable, IFontProvider
 {
     private readonly PersistentComponentState _persistentComponentState;
-    private readonly IJSRuntime _jsRuntime;
+    private readonly IHttpContextProxy _httpContextProxy;
     private PersistingComponentStateSubscription _persistingComponentStateSubscription;
 
     private string? _font;
@@ -15,13 +13,12 @@ public class FontProvider : IDisposable, IFontProvider
 
     public FontProvider(
         PersistentComponentState persistentComponentState,
-        IJSRuntime jsRuntime)
+        IHttpContextProxy httpContextProxy)
     {
         _persistentComponentState = persistentComponentState;
-        _jsRuntime = jsRuntime;
-
+        _httpContextProxy = httpContextProxy;
         _persistingComponentStateSubscription =
-            _persistentComponentState.RegisterOnPersisting(PersistFontAndSize, RenderMode.InteractiveAuto);
+            _persistentComponentState.RegisterOnPersisting(PersistFontAndSize);
     }
 
     public event FontChangedHandler? FontChanged;
@@ -32,16 +29,8 @@ public class FontProvider : IDisposable, IFontProvider
         _font = font;
         FontChanged?.Invoke(font);
 
-        try
-        {
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "font", font);
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.loadGoogleFont", font);
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFont", font);
-        }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering"))
-        {
-            // Ignore errors during prerender
-        }
+        await _httpContextProxy.SetValueAsync("font", font);
+
     }
 
     public async Task<string> GetFontAsync()
@@ -57,14 +46,8 @@ public class FontProvider : IDisposable, IFontProvider
     {
         string? fontStr = null;
 
-        try
-        {
-            fontStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "font");
-        }
-        catch
-        {
-            // JS not ready during prerender
-        }
+        fontStr = await _httpContextProxy.GetValueAsync("font");
+
 
         if (string.IsNullOrEmpty(fontStr) &&
             _persistentComponentState.TryTakeFromJson<string>("Font", out var restored))
@@ -74,15 +57,6 @@ public class FontProvider : IDisposable, IFontProvider
 
         _font = !string.IsNullOrEmpty(fontStr) ? fontStr : "Inter";
 
-        try
-        {
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.loadGoogleFont", _font);
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFont", _font);
-        }
-        catch (InvalidOperationException)
-        {
-            // Ignore prerender
-        }
     }
 
     public async Task SetFontSizeAsync(string size)
@@ -90,18 +64,11 @@ public class FontProvider : IDisposable, IFontProvider
         _fontSize = size;
         FontSizeChanged?.Invoke(size);
 
-        try
-        {
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "fontSize", size);
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFontSize", size);
-        }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering"))
-        {
-            // Ignore prerender
-        }
+        await _httpContextProxy.SetValueAsync("fontSize", size);
+
     }
 
-    public async Task<string?> GetFontSizeAsync()
+    public async Task<string> GetFontSizeAsync()
     {
         if (string.IsNullOrEmpty(_fontSize))
         {
@@ -115,14 +82,8 @@ public class FontProvider : IDisposable, IFontProvider
     {
         string? sizeStr = null;
 
-        try
-        {
-            sizeStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "fontSize");
-        }
-        catch
-        {
-            // JS not ready during prerender
-        }
+        sizeStr = await _httpContextProxy.GetValueAsync("fontSize");
+
 
         if (string.IsNullOrEmpty(sizeStr) &&
             _persistentComponentState.TryTakeFromJson<string>("FontSize", out var restored))
@@ -130,16 +91,7 @@ public class FontProvider : IDisposable, IFontProvider
             sizeStr = restored;
         }
 
-        _fontSize = !string.IsNullOrEmpty(sizeStr) ? sizeStr : "16px";
-
-        try
-        {
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setFontSize", _fontSize);
-        }
-        catch (InvalidOperationException)
-        {
-            // Ignore prerender
-        }
+        _fontSize = !string.IsNullOrEmpty(sizeStr) ? sizeStr : "14px";
     }
 
     private async Task PersistFontAndSize()

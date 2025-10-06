@@ -21,7 +21,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddResponseCompression(opts =>
@@ -92,13 +91,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseWebAssemblyDebugging();
 }
 
 app.UseHttpsRedirection();
 app.UseCors();
 
 app.UseResponseCompression();
-app.MapStaticAssets();
+app.UseStaticFiles();
 
 // Enable the .dat file extension (required to serve icudt.dat from _frameworkCompat/
 var provider = new FileExtensionContentTypeProvider();
@@ -110,7 +110,6 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Blogtify.Client._Imports).Assembly);
 

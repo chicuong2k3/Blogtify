@@ -7,27 +7,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
 
-    <link rel="stylesheet" href="@Assets["css/app.css"]">
-    <link rel="stylesheet" href="@Assets["Blogtify.styles.css"]">
-    <link href="@Assets["_content/Havit.Blazor.Components.Web.Bootstrap/bootstrap.min.css"]" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="Blogtify.styles.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="@Assets["css/theme-yeti.css"]" id="theme-stylesheet">
-    <link rel="stylesheet" href="@Assets["css/prism.min.css"]">
-    <link rel="stylesheet" href="@Assets["css/prism-coy-without-shadows.min.css"]" id="code-block-stylesheet">
-    <link rel="stylesheet" href="@Assets["css/prism-line-numbers.min.css"]">
-    <link rel="stylesheet" href="@Assets["css/prism-show-language.min.css"]">
-    <link rel="stylesheet" href="@Assets["css/code-block.css"]">
-
-    <script src="@Assets["js/theme.js"]" defer></script>
-    <script src="@Assets["js/app.js"]" defer></script>
+    <link href="css/theme-yeti.css" rel="stylesheet" id="theme-stylesheet" />
+    <link href="css/prism.min.css" rel="stylesheet" />
+    <link href="css/prism-coy-without-shadows.min.css" rel="stylesheet" id="code-block-stylesheet" />
+    <link href="css/prism-line-numbers.min.css" rel="stylesheet" />
+    <link href="css/prism-show-language.min.css" rel="stylesheet" />
+    <link href="css/code-block.css" rel="stylesheet" />
     <HeadOutlet @rendermode="InteractiveWebAssembly" />
 </head>
 
 <body class="line-numbers">
     <Routes @rendermode="InteractiveWebAssembly" />
+    @((MarkupString)@HxSetup.RenderBootstrapJavaScriptReference())
     <script src="_framework/blazor.web.js" autostart="false"></script>
-    <script webworker-enabled src="@Assets["js/wasm-feature-detect.1.6.1.js"]"></script>
-    <script webworker-enabled>
+
+    <script webworker-enabled type="module">
+        import * as wasmFeatureDetect from './js/wasm-feature-detect.1.8.0.js';
         (async () => {
             var url = new URL(location.href);
             let verboseStart = url.searchParams.get('verboseStart') === '1';
@@ -78,25 +76,24 @@
         })();
     </script>
 
-
-    @((MarkupString)@HxSetup.RenderBootstrapJavaScriptReference())
-
-    <script src="@Assets["js/code-block.js"]" defer></script>
-    <script src="@Assets["js/prism-core.min.js"]" defer></script>
-    <script src="@Assets["js/prism-autoloader.min.js"]" defer></script>
-    <script src="@Assets["js/prism-clike.min.js"]" defer></script>
-    <script src="@Assets["js/prism-markup.min.js"]" defer></script>
-    <script src="@Assets["js/prism-csharp.min.js"]" defer></script>
-    <script src="@Assets["js/prism-yaml.min.js"]" defer></script>
-    <script src="@Assets["js/prism-javascript.min.js"]" defer></script>
-    <script src="@Assets["js/prism-typescript.min.js"]" defer></script>
-    <script src="@Assets["js/prism-css.min.js"]" defer></script>
-    <script src="@Assets["js/prism-bash.min.js"]" defer></script>
-    <script src="@Assets["js/prism-python.min.js"]" defer></script>
-    <script src="@Assets["js/prism-sql.min.js"]" defer></script>
-    <script src="@Assets["js/prism-http.min.js"]" defer></script>
-    <script src="@Assets["js/prism-line-numbers.min.js"]" defer></script>
-    <script src="@Assets["js/prism-show-language.min.js"]" defer></script>
+    <script src="js/theme.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/code-block.js" defer></script>
+    <script src="js/prism-core.min.js" defer></script>
+    <script src="js/prism-autoloader.min.js" defer></script>
+    <script src="js/prism-clike.min.js" defer></script>
+    <script src="js/prism-markup.min.js" defer></script>
+    <script src="js/prism-csharp.min.js" defer></script>
+    <script src="js/prism-yaml.min.js" defer></script>
+    <script src="js/prism-javascript.min.js" defer></script>
+    <script src="js/prism-typescript.min.js" defer></script>
+    <script src="js/prism-css.min.js" defer></script>
+    <script src="js/prism-bash.min.js" defer></script>
+    <script src="js/prism-python.min.js" defer></script>
+    <script src="js/prism-sql.min.js" defer></script>
+    <script src="js/prism-http.min.js" defer></script>
+    <script src="js/prism-line-numbers.min.js" defer></script>
+    <script src="js/prism-show-language.min.js" defer></script>
 
     <!-- Adsense: Lazy load after onload to reduce third-party block -->
     <script>
@@ -110,18 +107,18 @@
     </script>
 
     <script>
-        function initMath() {
-                window.mathjaxReady.then((MathJax) => {
-                    MathJax.typesetPromise().catch(err => console.error('MathJax typeset error:', err));
-                }).catch(err => console.error('MathJax load error:', err));
-        }
+        // function initMath() {
+        //         window.mathjaxReady.then((MathJax) => {
+        //             MathJax.typesetPromise().catch(err => console.error('MathJax typeset error:', err));
+        //         }).catch(err => console.error('MathJax load error:', err));
+        // }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) initMath();
-            });
-        });
-        document.querySelectorAll('.math-block').forEach(el => observer.observe(el));
+        // const observer = new IntersectionObserver((entries) => {
+        //     entries.forEach(entry => {
+        //         if(entry.isIntersecting) initMath();
+        //     });
+        // });
+        // document.querySelectorAll('.math-block').forEach(el => observer.observe(el));
     </script>
 
 </body>

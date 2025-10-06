@@ -1,24 +1,22 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace Blogtify.Client.Theming;
 
 public class ThemeProvider : IDisposable, IThemeProvider
 {
     private readonly PersistentComponentState _persistentComponentState;
-    private readonly IJSRuntime _jsRuntime;
+    private readonly IHttpContextProxy _httpContextProxy;
     private PersistingComponentStateSubscription _persistingComponentStateSubscription;
     private Theme? _theme;
 
     public ThemeProvider(
         PersistentComponentState persistentComponentState,
-        IJSRuntime jsRuntime)
+        IHttpContextProxy httpContextProxy)
     {
         _persistentComponentState = persistentComponentState;
-        _jsRuntime = jsRuntime;
+        _httpContextProxy = httpContextProxy;
         _persistingComponentStateSubscription =
-            _persistentComponentState.RegisterOnPersisting(PersistTheme, RenderMode.InteractiveAuto);
+            _persistentComponentState.RegisterOnPersisting(PersistTheme);
     }
 
     public event ThemeChangedHandler? ThemeChanged;
@@ -28,15 +26,8 @@ public class ThemeProvider : IDisposable, IThemeProvider
         _theme = theme;
         ThemeChanged?.Invoke(theme);
 
-        try
-        {
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "theme", theme.ToString());
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setTheme", theme.ToString());
-        }
-        catch (InvalidOperationException ex) when (ex.Message.Contains("prerendering"))
-        {
-            // Ignore errors during prerender
-        }
+        await _httpContextProxy.SetValueAsync("theme", theme.ToString());
+
     }
 
     public async Task<Theme> GetThemeAsync()
@@ -53,14 +44,7 @@ public class ThemeProvider : IDisposable, IThemeProvider
     {
         string? themeStr = null;
 
-        try
-        {
-            themeStr = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "theme");
-        }
-        catch
-        {
-            // JS not ready during prerender
-        }
+        themeStr = await _httpContextProxy.GetValueAsync("theme");
 
         if (string.IsNullOrEmpty(themeStr) &&
             _persistentComponentState.TryTakeFromJson<Theme>("Theme", out var restored))
@@ -77,14 +61,6 @@ public class ThemeProvider : IDisposable, IThemeProvider
             _theme = Theme.Yeti; // default
         }
 
-        try
-        {
-            await _jsRuntime.InvokeVoidAsync("themeSwitcher.setTheme", _theme.Value.ToString());
-        }
-        catch (InvalidOperationException)
-        {
-            // Ignore prerender
-        }
     }
 
     private async Task PersistTheme()

@@ -7,6 +7,6 @@ public interface IFontProvider
     Task<string> GetFontAsync();
     Task SetFontAsync(string font);
 
-    Task<string?> GetFontSizeAsync();
+    Task<string> GetFontSizeAsync();
     Task SetFontSizeAsync(string size);
 }
