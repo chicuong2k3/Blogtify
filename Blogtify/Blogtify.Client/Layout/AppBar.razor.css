@@ -1,4 +1,7 @@
 
+.appbar {
+    z-index: 20000;
+}
 
 .logo:hover {
     cursor: pointer;
