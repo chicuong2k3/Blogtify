@@ -21,6 +21,7 @@
 
 <body class="line-numbers">
     <Routes @rendermode="InteractiveWebAssembly" />
+
     @((MarkupString)@HxSetup.RenderBootstrapJavaScriptReference())
     <script src="_framework/blazor.web.js" autostart="false"></script>
 
@@ -76,8 +77,10 @@
         })();
     </script>
 
+
     <script src="js/theme.js" defer></script>
     <script src="js/app.js" defer></script>
+
     <script src="js/code-block.js" defer></script>
     <script src="js/prism-core.min.js" defer></script>
     <script src="js/prism-autoloader.min.js" defer></script>
@@ -107,18 +110,18 @@
     </script>
 
     <script>
-        // function initMath() {
-        //         window.mathjaxReady.then((MathJax) => {
-        //             MathJax.typesetPromise().catch(err => console.error('MathJax typeset error:', err));
-        //         }).catch(err => console.error('MathJax load error:', err));
-        // }
+        function initMath() {
+                window.mathjaxReady.then((MathJax) => {
+                    MathJax.typesetPromise().catch(err => console.error('MathJax typeset error:', err));
+                }).catch(err => console.error('MathJax load error:', err));
+        }
 
-        // const observer = new IntersectionObserver((entries) => {
-        //     entries.forEach(entry => {
-        //         if(entry.isIntersecting) initMath();
-        //     });
-        // });
-        // document.querySelectorAll('.math-block').forEach(el => observer.observe(el));
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) initMath();
+            });
+        });
+        document.querySelectorAll('.math-block').forEach(el => observer.observe(el));
     </script>
 
 </body>
