@@ -3,6 +3,8 @@
 public enum Theme
 {
     Yeti,
+    Material,
+    SoftUI,
     Flatly,
     Lumen,
     Simplex,

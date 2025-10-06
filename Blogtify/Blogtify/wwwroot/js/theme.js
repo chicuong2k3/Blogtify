@@ -7,7 +7,7 @@
             link.href = `css/theme-${themeName.toLowerCase()}.css`;
         }
 
-        const lightThemes = ['yeti', 'flatly', 'lumen', 'materia', 'simplex', 'sketchy', 'sandstone'];
+        const lightThemes = ['yeti', 'flatly', 'lumen', 'material', 'softui', 'simplex', 'sketchy', 'sandstone'];
         const darkThemes = ['darkly', 'slate', 'superhero', 'vapor', 'solar'];
         const codeBlockLink = document.getElementById("code-block-stylesheet");
         if (codeBlockLink) {
