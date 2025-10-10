@@ -1,7 +1,7 @@
 ﻿---
 url: [/post/doc-co-cau-code-hoi-1-den-4]
 title: "Độc cô cầu code - Hồi 1 đến 4"
-$attribute: PostMetadata(Id = 1, Title = "Độc cô cầu code - Hồi 1 đến 4", Category = "Truyện coding", LastModified = "23-09-2025", IsDraft = true)
+$attribute: PostMetadata(Id = 1, Title = "Độc cô cầu code - Hồi 1 đến 4", Category = "Truyện coding", LastModified = "11-10-2025")
 $layout: BlogContentLayout
 ---
 
