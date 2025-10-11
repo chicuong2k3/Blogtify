@@ -46,11 +46,7 @@
 		</None>
 	</ItemGroup>
 
-	<ItemGroup>
-		<ImageFiles Include="Content\**\*.png;Content\**\*.jpg;Content\**\*.jpeg;Content\**\*.gif" />
-	</ItemGroup>
-
 	<Target Name="ConvertImagesToWebP" AfterTargets="Build">
-		<Exec Command="dotnet run --project ../ConvertToWebP/ConvertToWebP.csproj" />
+		<Exec Command="dotnet run" WorkingDirectory="../ConvertToWebP" />
 	</Target>
 </Project>

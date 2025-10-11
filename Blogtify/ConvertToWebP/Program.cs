@@ -2,8 +2,8 @@
 using SixLabors.ImageSharp.Formats.Webp;
 using System.IO;
 
-string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Blogtify.Client"));
-string contentPath = Path.Combine(projectRoot, "content");
+string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "Blogtify.Client"));
+string contentPath = Path.Combine(projectRoot, "Content");
 string outputFolder = Path.Combine(projectRoot, "wwwroot");
 
 if (!Directory.Exists(contentPath))
